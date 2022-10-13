@@ -1,0 +1,10 @@
+".\Objects\Delay_1T.obj",
+".\Objects\STARTUP.obj",
+".\Objects\ascii.obj",
+".\Objects\main.obj",
+".\Objects\modbus.obj",
+".\Objects\slave.obj" 
+TO ".\Objects\slave" 
+PRINT(".\Listings\slave.m51") IXREF 
+RAMSIZE(256) 
+CODE( 0X0000-0XFFFF )

@@ -1,0 +1,492 @@
+
+
+#include "..\stdint.h"
+
+#include "REG_MPC82G516.h"
+
+#include "modbus.h"
+#include "main.h"
+#include "..\ascii.h"
+#include "slave.h"
+
+
+/* ASCII FRAME */
+uint8_t idata ascii_frame[ASCII_FRAME_SIZE]; // max size = 255
+uint8_t idata data_count = 0;
+uint8_t idata send_count = 0;
+bit broadcast = 0;
+
+
+void execute_modbus_command(void)   
+{
+    uint8_t is_me = 0, fun = 0, lrc = 0;         
+
+    if ( data_count < 9 )
+    {     
+        clear_frame();  // bad frame discard , minimun 9 characters for valid  
+        return;
+    }
+    data_count -= 2; //skip cr lf       
+    lrc = AsciiToByte(ascii_frame[data_count-2], ascii_frame[data_count-1]);
+    data_count -= 2; //skip lrc   
+    fun = lrc_calc(); 
+    if ( fun != lrc )
+    {     
+        clear_frame();  // bad LRC, frame discard    
+        return;
+    }
+     
+    /*   frame ok  */
+    is_me = AsciiToByte(ascii_frame[1], ascii_frame[2]); 
+    if ( is_me == 0 )
+    {
+        broadcast = 1;    
+    }
+    else
+    {
+        broadcast = 0;
+        if ( DIR != is_me )
+        {
+            clear_frame();
+            return;   
+        }
+    }
+
+    fun = AsciiToByte(ascii_frame[3], ascii_frame[4]);    
+    switch ( fun )
+    {
+        case 1:
+        {                 
+            ResponseReadCoilsStatus_01();            
+            break;        
+        }
+        case 2:
+        {
+            ResponseReadInputStatus_02();
+            break;
+        }
+        case 3:
+        {        
+            ResponseReadHoldingRegisters_03();
+            break;
+        }
+        case 4:
+        {
+            ResponseReadInputRegisters_04();
+            break;
+        }
+        case 5:
+        {           
+            ResponseForceSingleCoil_05();            
+            break;
+        }
+        case 6:
+        {
+            ResponsePresetSingleRegister_06();            
+            break;
+        }
+        case 15:
+        {                     
+            ResponseForceMultipleCoils_15();
+            break;            
+        }        
+        case 16:
+        {              
+            ResponsePresetMultipleRegisters_16();
+            break;            
+        }        
+        default: 
+        {
+            break;
+        }
+    }
+}
+
+void gen_lrc(void)
+{
+    ByteToAscii(lrc_calc());
+    ascii_frame[data_count++] = ascii[0];
+    ascii_frame[data_count++] = ascii[1];
+    
+    ascii_frame[data_count++] = CR;
+    ascii_frame[data_count++] = LF;    
+}
+
+void clear_frame(void)
+{    
+    uint8_t i = 0;
+
+    data_count = 0;
+    send_count = 0;
+    for ( i = 0; i < ASCII_FRAME_SIZE; i++ )
+    {
+        ascii_frame[i] = 0;
+    }
+}
+
+void tx_assci_frame(void)
+{
+    if ( broadcast == 1 )
+    {
+        RS485En = 0;    //rx
+        broadcast = 0;
+        clear_frame();
+        return ;    
+    }
+   
+    RS485En = 1; // set for tx   
+    send_count = 1;
+    TI = 0;
+    TB8 = 0;        
+    SBUF = ascii_frame[0];
+}
+
+uint8_t lrc_calc(void) 
+{
+    uint8_t result = 0, i = 0;            
+
+    for ( i = 1; i < data_count; i+=2 )
+    {
+        result += AsciiToByte(ascii_frame[i], ascii_frame[i+1]);
+    }
+    result = ~result;
+    return ( result + 1 );
+}
+
+/* function codes */
+void ResponseReadCoilsStatus_01(void) // 0x01, OK
+{
+    uint16_t start = 0, cant = 0;
+    uint16_t i = 0, limit = 0;
+    uint8_t coils = 0, k = 0, new_data_count = 0;
+
+    data_count = 7;  // data count byte reserved        
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }    
+    start = AsciiToTwoByte();
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9];
+    }    
+    cant = AsciiToTwoByte();    
+    limit = start + cant;
+
+    /* querying coils status */
+    for ( i = start; i < limit; i += 8 )
+    {
+        k = 0;
+        coils = 0;    
+        while ( k < 8 && i + k < limit)            
+        {        
+            uint8_t val = GetCoilValue(i + k);    // status of coil i+k
+            if ( val == 1 ) //coil active
+            {
+                coils |= (1 << k);            
+            }                
+            k++;
+        }            
+        ByteToAscii(coils);
+        ascii_frame[data_count++] = ascii[0];
+        ascii_frame[data_count++] = ascii[1];        
+        new_data_count++;     // add one byte to response frame
+    }
+    
+    ByteToAscii(new_data_count);
+    ascii_frame[5] = ascii[0];
+    ascii_frame[6] = ascii[1];
+
+    gen_lrc();
+    
+    tx_assci_frame();
+    return;
+}
+
+void ResponseReadInputStatus_02(void) // 0x02, OK!!!
+{
+    uint16_t start = 0, cant = 0;
+    uint16_t i = 0, limit = 0;
+    uint8_t inputs = 0, k = 0, new_data_count = 0;
+
+    data_count = 7;  // data count byte reserved        
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }    
+    start = AsciiToTwoByte();
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9];
+    }
+    
+    cant = AsciiToTwoByte();    
+    limit = start + cant;
+
+    /* querying inputs status */
+    for ( i = start; i < limit; i += 8 )
+    {
+        k = 0;
+        inputs = 0;    
+        while ( k < 8 && i + k < limit)            
+        {        
+            uint8_t val = GetInputValue(i + k);    // status of input i+k
+
+            if ( val == 1 ) //input active
+            {
+                inputs |= (1 << k);            
+            }                
+            k++;
+        }            
+        ByteToAscii(inputs);
+        ascii_frame[data_count++] = ascii[0];
+        ascii_frame[data_count++] = ascii[1];
+        
+        new_data_count++;     // add one byte to response frame
+    }
+    
+    ByteToAscii(new_data_count);
+    ascii_frame[5] = ascii[0];
+    ascii_frame[6] = ascii[1];
+
+    gen_lrc();
+    
+    tx_assci_frame();
+    return;
+}
+
+void ResponseReadHoldingRegisters_03(void)  // 0x03, OK!!!
+{
+    uint16_t start = 0, cant = 0;
+    uint16_t i = 0, limit = 0, status = 0;
+    uint8_t new_data_count = 0;
+
+    data_count = 7;  // data count byte reserved        
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }    
+    start = AsciiToTwoByte();
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9];
+    }    
+    cant = AsciiToTwoByte();    
+    limit = start + cant;
+
+    /* querying holding registers status */
+    for ( i = start; i < limit; i++ )
+    {
+        status = GetHoldingRegisterValue(i);       
+        TwoByteToAscii(status);
+         
+        ascii_frame[data_count++] = ascii[3];
+        ascii_frame[data_count++] = ascii[2];
+        ascii_frame[data_count++] = ascii[1];
+        ascii_frame[data_count++] = ascii[0];                          
+    
+        new_data_count+=2;     // add two bytes to response frame
+    }
+    
+    ByteToAscii(new_data_count);
+    ascii_frame[5] = ascii[0];
+    ascii_frame[6] = ascii[1];
+
+    gen_lrc();
+    
+    tx_assci_frame();
+    return;
+}
+
+void ResponseReadInputRegisters_04(void)  // 0x04,  OK!!!!
+{
+    uint16_t start = 0, cant = 0;
+    uint16_t i = 0, limit = 0, status = 0;
+    uint8_t new_data_count = 0;
+    
+    data_count = 7;  // data count byte reserved       
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }    
+    start = AsciiToTwoByte();
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9];
+    }
+    
+    cant = AsciiToTwoByte();    
+    limit = start + cant;
+   
+    /* querying input registers status */
+    for ( i = start; i < limit; i++ )
+    {
+        status = GetInputRegisterValue(i);
+        
+        TwoByteToAscii(status);
+        ascii_frame[data_count++] = ascii[3];
+        ascii_frame[data_count++] = ascii[2];
+        ascii_frame[data_count++] = ascii[1];
+        ascii_frame[data_count++] = ascii[0];
+      
+        new_data_count+=2;     // add two bytes to response frame
+    }
+    
+    ByteToAscii(new_data_count);
+    ascii_frame[5] = ascii[0];
+    ascii_frame[6] = ascii[1];
+
+    gen_lrc();
+    
+    tx_assci_frame();
+    return;
+}
+
+void ResponseForceSingleCoil_05(void) // 0x05, OK!!!!
+{
+    uint16_t coilID = 0;
+    uint16_t value =  0;    
+    uint16_t i = 0;            
+
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }   
+    coilID = AsciiToTwoByte();     //coil index 
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9]; 
+    }    
+    value = AsciiToTwoByte();       //coil value       
+    if ( value == 0 || value == 65280 )     // 0 or 1, 0000h or FF00h
+    {    
+        SetCoilValue(coilID, value > 0);
+    }
+    else
+    {
+        clear_frame();
+        return ;    
+    }
+    
+    gen_lrc();
+
+    tx_assci_frame();
+    return;
+}
+
+void ResponsePresetSingleRegister_06(void)  //0x06, OK!!!!
+{
+    uint16_t registerID = 0;
+    uint16_t value =  0;    
+    uint16_t i = 0;           
+
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }   
+    registerID = AsciiToTwoByte();     //register index 
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9];
+    }    
+    value = AsciiToTwoByte();          //register value          
+    SetHoldingRegisterValue(registerID, value);
+    
+    gen_lrc();
+
+    tx_assci_frame();
+    return;
+}
+
+void ResponseForceMultipleCoils_15(void) // 0x0F, OK
+{
+    uint16_t start = 0, cant = 0;
+    uint16_t i = 0, limit = 0;
+    uint8_t coils = 0, k = 0, new_data_count = 0, tempAdr = 0;
+    uint8_t index = 0, offset = 0;       
+    uint16_t idata parameters[20];
+    uint8_t idata byte_count;    
+
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }   
+    start = AsciiToTwoByte();    
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9];
+    }    
+    cant = AsciiToTwoByte();        
+    limit = start + cant;
+    
+    new_data_count = AsciiToByte(ascii_frame[13], ascii_frame[14] );
+    data_count = 15;
+    
+    /* read new coils values */
+    byte_count = 0;    
+    for ( i = 0; i < new_data_count; i++ )
+    {
+        coils = AsciiToByte(ascii_frame[data_count], ascii_frame[data_count+1]);
+        data_count += 2;        
+        parameters[byte_count++] = coils;      
+    }
+
+    /* force coils status */
+    for ( i = start; i < limit; i++ )
+    {        
+        tempAdr = i - start;        
+        index = tempAdr / 8;
+        offset = tempAdr % 8;        
+        k = ( parameters[index] & ( 1 << offset ) );    
+        SetCoilValue(i, k > 0);    // force status of coil i with k                    
+    }
+    /* response frame */
+    data_count = 13;
+
+    gen_lrc();
+    
+    tx_assci_frame();
+    return;
+}
+
+void ResponsePresetMultipleRegisters_16(void)   // 0x10, OK!!!
+{
+    uint16_t start = 0, cant = 0;
+    uint16_t i = 0, limit = 0, reg_value = 0;
+    signed char j = 0;
+    uint8_t idata byte_count;          
+
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 5];
+    }   
+    start = AsciiToTwoByte();        
+    for ( i = 0; i < 4; i++ )
+    {
+        ascii[i] = ascii_frame[i + 9];
+    }    
+    cant = AsciiToTwoByte();        
+    limit = start + cant;
+        
+    byte_count = AsciiToByte(ascii_frame[13], ascii_frame[14] );
+    data_count = 15;
+      
+    /* read and set new holding registers values */
+    byte_count /= 2;
+    for ( i = 0; i < byte_count; i++ )
+    {       
+        for ( j = 0; j < 4; j++ )
+        {     
+            ascii[j] = ascii_frame[data_count++];        
+        }        
+        reg_value = AsciiToTwoByte();        
+        holding_registers_array[start++] = reg_value;           
+    }
+
+    data_count = 13;
+
+    gen_lrc();
+    
+    tx_assci_frame();
+    return;
+}

@@ -1,0 +1,4244 @@
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MODBUS
+OBJECT MODULE PLACED IN .\Objects\modbus.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE modbus.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND CODE LISTINCLUDE SY
+                    -MBOLS PRINT(.\Listings\modbus.lst) TABS(2) PREPRINT(.\Listings\modbus.i) OBJECT(.\Objects\modbus.obj)
+
+line level    source
+
+   1          
+   2          
+   3          #include "..\stdint.h"
+   1      =1  /*-------------------------------------------------------------------------
+   2      =1     stdint.h - ISO C99 7.18 Integer types <stdint.h>
+   3      =1  
+   4      =1     Copyright (C) 2005, Maarten Brock, sourceforge.brock@dse.nl
+   5      =1     Copyright (C) 2011, Philipp Klaus Krause, pkk@spth.de
+   6      =1  
+   7      =1     This library is free software; you can redistribute it and/or modify it
+   8      =1     under the terms of the GNU General Public License as published by the
+   9      =1     Free Software Foundation; either version 2, or (at your option) any
+  10      =1     later version.
+  11      =1  
+  12      =1     This library is distributed in the hope that it will be useful,
+  13      =1     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  14      =1     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  15      =1     GNU General Public License for more details.
+  16      =1  
+  17      =1     You should have received a copy of the GNU General Public License 
+  18      =1     along with this library; see the file COPYING. If not, write to the
+  19      =1     Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
+  20      =1     MA 02110-1301, USA.
+  21      =1  
+  22      =1     As a special exception, if you link this library with other files,
+  23      =1     some of which are compiled with SDCC, to produce an executable,
+  24      =1     this library does not by itself cause the resulting executable to
+  25      =1     be covered by the GNU General Public License. This exception does
+  26      =1     not however invalidate any other reasons why the executable file
+  27      =1     might be covered by the GNU General Public License.
+  28      =1  -------------------------------------------------------------------------*/
+  29      =1  
+  30      =1  #ifndef _STDINT_H
+  31      =1  #define _STDINT_H       1
+  32      =1  
+  33      =1  /* Exact integral types.  */
+  34      =1  
+  35      =1  #if !defined(__SDCC_pic14) && !defined(__SDCC_pic16)
+  36      =1  #if __STDC_VERSION__ >= 199901L
+*** WARNING C322 IN LINE 36 OF ..\stdint.h: unknown identifier
+           =1 #define __SDCC_LONGLONG
+           =1 #endif
+  39      =1  #endif
+  40      =1  
+  41      =1  /* Signed.  */
+  42      =1  
+  43      =1  typedef signed char             int8_t;
+  44      =1  typedef short int               int16_t;
+  45      =1  typedef long int                int32_t;
+  46      =1  #ifdef __SDCC_LONGLONG
+           =1 typedef long long int           int64_t;
+           =1 #endif
+  49      =1  
+  50      =1  /* Unsigned.  */
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 2   
+
+  51      =1  typedef unsigned char           uint8_t;
+  52      =1  typedef unsigned short int      uint16_t;
+  53      =1  typedef unsigned long int       uint32_t;
+  54      =1  #ifdef __SDCC_LONGLONG
+           =1 typedef unsigned long long int  uint64_t;
+           =1 #endif
+  57      =1  
+  58      =1  /* Small types.  */
+  59      =1  
+  60      =1  /* Signed.  */
+  61      =1  typedef signed char             int_least8_t;
+  62      =1  typedef short int               int_least16_t;
+  63      =1  typedef long int                int_least32_t;
+  64      =1  #ifdef __SDCC_LONGLONG
+           =1 typedef long long int           int_least64_t;
+           =1 #endif
+  67      =1  
+  68      =1  /* Unsigned.  */
+  69      =1  typedef unsigned char           uint_least8_t;
+  70      =1  typedef unsigned short int      uint_least16_t;
+  71      =1  typedef unsigned long int       uint_least32_t;
+  72      =1  #ifdef __SDCC_LONGLONG
+           =1 typedef unsigned long long int  uint_least64_t;
+           =1 #endif
+  75      =1  
+  76      =1  /* Fast types.  */
+  77      =1  
+  78      =1  /* Signed.  */
+  79      =1  typedef signed char             int_fast8_t;
+  80      =1  typedef int                     int_fast16_t;
+  81      =1  typedef long int                int_fast32_t;
+  82      =1  #ifdef __SDCC_LONGLONG
+           =1 typedef long long int           int_fast64_t;
+           =1 #endif
+  85      =1  
+  86      =1  /* Unsigned.  */
+  87      =1  typedef unsigned char           uint_fast8_t;
+  88      =1  typedef unsigned int            uint_fast16_t;
+  89      =1  typedef unsigned long int       uint_fast32_t;
+  90      =1  #ifdef __SDCC_LONGLONG
+           =1 typedef unsigned long long int  uint_fast64_t;
+           =1 #endif
+  93      =1  
+  94      =1  /* Types for `void *' pointers.  */
+  95      =1  #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =1   typedef long int              intptr_t;
+           =1   typedef unsigned long int     uintptr_t;
+           =1 #else
+  99      =1    typedef int                   intptr_t;
+ 100      =1    typedef unsigned int          uintptr_t;
+ 101      =1  #endif
+ 102      =1  
+ 103      =1  
+ 104      =1  /* Largest integral types.  */
+ 105      =1  #ifndef __SDCC_LONGLONG
+ 106      =1  typedef long int                intmax_t;
+ 107      =1  typedef unsigned long int       uintmax_t;
+ 108      =1  #else
+           =1 typedef long long int           intmax_t;
+           =1 typedef unsigned long long int  uintmax_t;
+           =1 #endif
+ 112      =1  
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 3   
+
+ 113      =1  /* Limits of integral types.  */
+ 114      =1  
+ 115      =1  /* Minimum of signed integral types.  */
+ 116      =1  #define INT8_MIN               (-128)
+ 117      =1  #define INT16_MIN              (-32767-1)
+ 118      =1  #define INT32_MIN              (-2147483647L-1)
+ 119      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INT64_MIN              (-9223372036854775807LL-1)
+           =1 #endif
+ 122      =1  
+ 123      =1  /* Maximum of signed integral types.  */
+ 124      =1  #define INT8_MAX               (127)
+ 125      =1  #define INT16_MAX              (32767)
+ 126      =1  #define INT32_MAX              (2147483647L)
+ 127      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INT64_MAX              (9223372036854775807LL)
+           =1 #endif
+ 130      =1  
+ 131      =1  /* Maximum of unsigned integral types.  */
+ 132      =1  #define UINT8_MAX              (255)
+ 133      =1  #define UINT16_MAX             (65535)
+ 134      =1  #define UINT32_MAX             (4294967295UL)
+ 135      =1  #ifdef __SDCC_LONGLONG
+           =1 #define UINT64_MAX             (18446744073709551615ULL)
+           =1 #endif
+ 138      =1  
+ 139      =1  /* Minimum of signed integral types having a minimum size.  */
+ 140      =1  #define INT_LEAST8_MIN         INT8_MIN
+ 141      =1  #define INT_LEAST16_MIN        INT16_MIN
+ 142      =1  #define INT_LEAST32_MIN        INT32_MIN
+ 143      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INT_LEAST64_MIN        INT64_MIN
+           =1 #endif
+ 146      =1  
+ 147      =1  /* Maximum of signed integral types having a minimum size.  */
+ 148      =1  #define INT_LEAST8_MAX         INT8_MAX
+ 149      =1  #define INT_LEAST16_MAX        INT16_MAX
+ 150      =1  #define INT_LEAST32_MAX        INT32_MAX
+ 151      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INT_LEAST64_MAX        INT64_MAX
+           =1 #endif
+ 154      =1  
+ 155      =1  /* Maximum of unsigned integral types having a minimum size.  */
+ 156      =1  #define UINT_LEAST8_MAX        UINT8_MAX
+ 157      =1  #define UINT_LEAST16_MAX       UINT16_MAX
+ 158      =1  #define UINT_LEAST32_MAX       UINT32_MAX
+ 159      =1  #ifdef __SDCC_LONGLONG
+           =1 #define UINT_LEAST64_MAX       UINT64_MAX
+           =1 #endif
+ 162      =1  
+ 163      =1  /* Minimum of fast signed integral types having a minimum size.  */
+ 164      =1  #define INT_FAST8_MIN          INT8_MIN
+ 165      =1  #define INT_FAST16_MIN         INT16_MIN
+ 166      =1  #define INT_FAST32_MIN         INT32_MIN
+ 167      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INT_FAST64_MIN         INT64_MIN
+           =1 #endif
+ 170      =1  
+ 171      =1  /* Maximum of fast signed integral types having a minimum size.  */
+ 172      =1  #define INT_FAST8_MAX          INT8_MAX
+ 173      =1  #define INT_FAST16_MAX         INT16_MAX
+ 174      =1  #define INT_FAST32_MAX         INT32_MAX
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 4   
+
+ 175      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INT_FAST64_MAX         INT64_MAX
+           =1 #endif
+ 178      =1  
+ 179      =1  /* Maximum of fast unsigned integral types having a minimum size.  */
+ 180      =1  #define UINT_FAST8_MAX         UINT8_MAX
+ 181      =1  #define UINT_FAST16_MAX        UINT16_MAX
+ 182      =1  #define UINT_FAST32_MAX        UINT32_MAX
+ 183      =1  #ifdef __SDCC_LONGLONG
+           =1 #define UINT_FAST64_MAX        UINT64_MAX
+           =1 #endif
+ 186      =1  
+ 187      =1  /* Values to test for integral types holding `void *' pointer.  */
+ 188      =1  #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =1 #define INTPTR_MIN             (-2147483647L-1)
+           =1 #define INTPTR_MAX             (2147483647L)
+           =1 #define UINTPTR_MAX            (4294967295UL)
+           =1 #else
+ 193      =1  #define INTPTR_MIN             (-32767-1)
+ 194      =1  #define INTPTR_MAX             (32767)
+ 195      =1  #define UINTPTR_MAX            (65535)
+ 196      =1  #endif
+ 197      =1  
+ 198      =1  /* Minimum for largest signed integral type.  */
+ 199      =1  #ifndef __SDCC_LONGLONG
+ 200      =1  #define INTMAX_MIN             (-2147483647L-1)
+ 201      =1  #else
+           =1 #define INTMAX_MIN             (-9223372036854775807LL-1)
+           =1 #endif
+ 204      =1  
+ 205      =1  /* Maximum for largest signed integral type.  */
+ 206      =1  #ifndef __SDCC_LONGLONG
+ 207      =1  #define INTMAX_MAX             (2147483647L)
+ 208      =1  #else
+           =1 #define INTMAX_MAX             (9223372036854775807LL)
+           =1 #endif
+ 211      =1  
+ 212      =1  /* Maximum for largest unsigned integral type.  */
+ 213      =1  #ifndef __SDCC_LONGLONG
+ 214      =1  #define UINTMAX_MAX            (4294967295UL)
+ 215      =1  #else
+           =1 #define UINTMAX_MAX            (18446744073709551615ULL)
+           =1 #endif
+ 218      =1  
+ 219      =1  /* Limits of other integer types.  */
+ 220      =1  
+ 221      =1  /* Limits of `ptrdiff_t' type.  */
+ 222      =1  #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =1 #define PTRDIFF_MIN           (-2147483647L-1)
+           =1 #define PTRDIFF_MAX           (2147483647L)
+           =1 #else
+ 226      =1  #define PTRDIFF_MIN           (-32767-1)
+ 227      =1  #define PTRDIFF_MAX           (32767)
+ 228      =1  #endif
+ 229      =1  
+ 230      =1  /* */
+ 231      =1  #define SIG_ATOMIC_MIN        (0)
+ 232      =1  #define SIG_ATOMIC_MAX        (255)
+ 233      =1  
+ 234      =1  /* Limit of `size_t' type.  */
+ 235      =1  #define SIZE_MAX               (65535u)
+ 236      =1  
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 5   
+
+ 237      =1  /* Signed.  */
+ 238      =1  #define INT8_C(c)      c
+ 239      =1  #define INT16_C(c)     c
+ 240      =1  #define INT32_C(c)     c ## L
+ 241      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INT64_C(c)     c ## LL
+           =1 #endif
+ 244      =1  
+ 245      =1  /* Unsigned.  */
+ 246      =1  #define UINT8_C(c)     c ## U
+ 247      =1  #define UINT16_C(c)    c ## U
+ 248      =1  #define UINT32_C(c)    c ## UL
+ 249      =1  #ifdef __SDCC_LONGLONG
+           =1 #define UINT64_C(c)    c ## ULL
+           =1 #endif
+ 252      =1  
+ 253      =1  #define WCHAR_MIN      0
+ 254      =1  #define WCHAR_MAX      0xffffffff
+ 255      =1  
+ 256      =1  #define WINT_MIN       0
+ 257      =1  #define WINT_MAX       0xffffffff
+ 258      =1  
+ 259      =1  /* Maximal type.  */
+ 260      =1  #ifdef __SDCC_LONGLONG
+           =1 #define INTMAX_C(c)    c ## LL
+           =1 #define UINTMAX_C(c)   c ## ULL
+           =1 #else
+ 264      =1  #define INTMAX_C(c)    c ## L
+ 265      =1  #define UINTMAX_C(c)   c ## UL
+ 266      =1  #endif
+ 267      =1  
+ 268      =1  /* Bounds-checking interfaces from annex K of the C11 standard. */
+ 269      =1  #if defined (__STDC_WANT_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__
+           =1 #define RSIZE_MAX SIZE_MAX
+           =1 #endif
+ 272      =1  
+ 273      =1  #endif /* stdint.h */
+ 274      =1  
+   4          
+   5          #include "REG_MPC82G516.h"
+   1      =1  #ifndef __REG_MPC82G516_H
+   2      =1  #define __REG_MPC82G516_H
+   3      =1  
+   4      =1  // MPC82G516
+   5      =1  
+   6      =1  
+   7      =1  // (System)
+   8      =1  sfr ACC       = 0xE0;
+   9      =1  sfr B         = 0xF0;
+  10      =1  sfr SP        = 0x81;
+  11      =1  sfr DPL       = 0x82;
+  12      =1  sfr DPH       = 0x83;
+  13      =1  sfr PSW       = 0xD0;
+  14      =1  
+  15      =1  // (Interrupt)
+  16      =1  sfr IE        = 0xA8;
+  17      =1  sfr AUXIE     = 0xAD;
+  18      =1  sfr XICON     = 0xC0;
+  19      =1  sfr IP        = 0xB8;
+  20      =1  sfr IPH       = 0xB7;
+  21      =1  sfr AUXIP     = 0xAE;
+  22      =1  sfr AUXIPH    = 0xAF;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 6   
+
+  23      =1  
+  24      =1  // (I/O Port)
+  25      =1  sfr P0        = 0x80;
+  26      =1  sfr P1        = 0x90;
+  27      =1  sfr P2        = 0xA0;
+  28      =1  sfr P3        = 0xB0;
+  29      =1  sfr P4        = 0xE8;
+  30      =1  sfr P0M0      = 0x93;
+  31      =1  sfr P0M1      = 0x94;
+  32      =1  sfr P1M0      = 0x91;
+  33      =1  sfr P1M1      = 0x92;
+  34      =1  sfr P2M0      = 0x95;
+  35      =1  sfr P2M1      = 0x96;
+  36      =1  sfr P3M0      = 0xB1;
+  37      =1  sfr P3M1      = 0xB2;
+  38      =1  sfr P4M0      = 0xB3;
+  39      =1  sfr P4M1      = 0xB4;
+  40      =1  
+  41      =1  // (Timer)
+  42      =1  sfr TCON      = 0x88;
+  43      =1  sfr TMOD      = 0x89;
+  44      =1  sfr T2CON     = 0xC8;
+  45      =1  sfr T2MOD     = 0xC9;
+  46      =1  sfr RCAP2L    = 0xCA;
+  47      =1  sfr RCAP2H    = 0xCB;
+  48      =1  sfr TL0       = 0x8A;
+  49      =1  sfr TH0       = 0x8C;
+  50      =1  sfr TL1       = 0x8B;
+  51      =1  sfr TH1       = 0x8D;
+  52      =1  sfr TL2       = 0xCC;
+  53      =1  sfr TH2       = 0xCD;
+  54      =1  
+  55      =1  // (Serial Port)
+  56      =1  sfr SCON      = 0x98;
+  57      =1  sfr SBUF      = 0x99;
+  58      =1  sfr SADDR     = 0xA9;
+  59      =1  sfr SADEN     = 0xB9;
+  60      =1  sfr S2CON     = 0xAA;
+  61      =1  sfr S2BRT     = 0xBA;
+  62      =1  sfr S2BUF     = 0x9A;
+  63      =1  
+  64      =1  // (ADC)
+  65      =1  sfr ADCTL     = 0xC5;
+  66      =1  sfr ADCH      = 0xC6;
+  67      =1  sfr ADCL      = 0xBE;
+  68      =1  sfr ADC       = 0xC6; //the same as ADCH, the higher 8 bits
+  69      =1  
+  70      =1  // (Keypad Interrupt)
+  71      =1  sfr KBCON     = 0xD6;
+  72      =1  sfr KBPATN    = 0xD5;
+  73      =1  sfr KBMASK    = 0xD7;
+  74      =1  
+  75      =1  // (SPI)
+  76      =1  sfr SPICTL    = 0x85;
+  77      =1  sfr SPIDAT    = 0x86;
+  78      =1  sfr SPISTAT   = 0x84;
+  79      =1  
+  80      =1  // (PCA)
+  81      =1  sfr CCON      = 0xD8;
+  82      =1  sfr CMOD      = 0xD9;
+  83      =1  sfr CL        = 0xE9;
+  84      =1  sfr CH        = 0xF9;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 7   
+
+  85      =1  sfr CCAPM0    = 0xDA;
+  86      =1  sfr CCAPM1    = 0xDB;
+  87      =1  sfr CCAPM2    = 0xDC;
+  88      =1  sfr CCAPM3    = 0xDD;
+  89      =1  sfr CCAPM4    = 0xDE;
+  90      =1  sfr CCAPM5    = 0xDF;
+  91      =1  sfr CCAP0H    = 0xFA;
+  92      =1  sfr CCAP0L    = 0xEA;
+  93      =1  sfr CCAP1H    = 0xFB;
+  94      =1  sfr CCAP1L    = 0xEB;
+  95      =1  sfr CCAP2H    = 0xFC;
+  96      =1  sfr CCAP2L    = 0xEC;
+  97      =1  sfr CCAP3H    = 0xFD;
+  98      =1  sfr CCAP3L    = 0xED;
+  99      =1  sfr CCAP4H    = 0xFE;
+ 100      =1  sfr CCAP4L    = 0xEE;
+ 101      =1  sfr CCAP5H    = 0xFF;
+ 102      =1  sfr CCAP5L    = 0xEF;
+ 103      =1  sfr PCAPWM0   = 0xF2;
+ 104      =1  sfr PCAPWM1   = 0xF3;
+ 105      =1  sfr PCAPWM2   = 0xF4;
+ 106      =1  sfr PCAPWM3   = 0xF5;
+ 107      =1  sfr PCAPWM4   = 0xF6;
+ 108      =1  sfr PCAPWM5   = 0xF7;
+ 109      =1  
+ 110      =1  // (Others)
+ 111      =1  sfr PCON      = 0x87;
+ 112      =1  sfr PCON2     = 0xC7;
+ 113      =1  sfr AUXR      = 0x8E;
+ 114      =1  sfr AUXR1     = 0xA2;
+ 115      =1  sfr AUXR2     = 0xA6;
+ 116      =1  sfr STRETCH   = 0x8F;
+ 117      =1  sfr EVRCR     = 0x97;
+ 118      =1  sfr WDTCR     = 0xE1;
+ 119      =1  
+ 120      =1  // (ISP)
+ 121      =1  sfr ISPCR     = 0xE7;
+ 122      =1  sfr IFMT      = 0xE5;
+ 123      =1  sfr IFD       = 0xE2;
+ 124      =1  sfr IFADRH    = 0xE3;
+ 125      =1  sfr IFADRL    = 0xE4;
+ 126      =1  sfr SCMD      = 0xE6;
+ 127      =1  
+ 128      =1  // (bits in PSW)
+ 129      =1  sbit CY       = PSW^7;
+ 130      =1  sbit AC       = PSW^6;
+ 131      =1  sbit F0       = PSW^5;
+ 132      =1  sbit RS1      = PSW^4;
+ 133      =1  sbit RS0      = PSW^3;
+ 134      =1  sbit OV       = PSW^2;
+ 135      =1  sbit P        = PSW^0;
+ 136      =1  
+ 137      =1  // (bits in IE)
+ 138      =1  sbit EA       = IE^7;
+ 139      =1  sbit ET2      = IE^5;
+ 140      =1  sbit ES       = IE^4;
+ 141      =1  sbit ET1      = IE^3;
+ 142      =1  sbit EX1      = IE^2;
+ 143      =1  sbit ET0      = IE^1;
+ 144      =1  sbit EX0      = IE^0;
+ 145      =1  
+ 146      =1  // (bits in IP)
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 8   
+
+ 147      =1  sbit PT2      = IP^5;
+ 148      =1  sbit PS       = IP^4;
+ 149      =1  sbit PT1      = IP^3;
+ 150      =1  sbit PX1      = IP^2;
+ 151      =1  sbit PT0      = IP^1;
+ 152      =1  sbit PX0      = IP^0;
+ 153      =1  
+ 154      =1  // (bits in SCON)
+ 155      =1  sbit FE       = SCON^7;
+ 156      =1  sbit SM0      = SCON^7;
+ 157      =1  sbit SM1      = SCON^6;
+ 158      =1  sbit SM2      = SCON^5;
+ 159      =1  sbit REN      = SCON^4;
+ 160      =1  sbit TB8      = SCON^3;
+ 161      =1  sbit RB8      = SCON^2;
+ 162      =1  sbit TI       = SCON^1;
+ 163      =1  sbit RI       = SCON^0;
+ 164      =1  
+ 165      =1  // (bits in TCON)
+ 166      =1  sbit TF1      = TCON^7;
+ 167      =1  sbit TR1      = TCON^6;
+ 168      =1  sbit TF0      = TCON^5;
+ 169      =1  sbit TR0      = TCON^4;
+ 170      =1  sbit IE1      = TCON^3;
+ 171      =1  sbit IT1      = TCON^2;
+ 172      =1  sbit IE0      = TCON^1;
+ 173      =1  sbit IT0      = TCON^0;
+ 174      =1  
+ 175      =1  // (bits in T2CON)
+ 176      =1  sbit TF2      = T2CON^7;
+ 177      =1  sbit EXF2     = T2CON^6;
+ 178      =1  sbit RCLK     = T2CON^5;
+ 179      =1  sbit TCLK     = T2CON^4;
+ 180      =1  sbit EXEN2    = T2CON^3;
+ 181      =1  sbit TR2      = T2CON^2;
+ 182      =1  sbit C_T2     = T2CON^1;
+ 183      =1  sbit CP_RL2   = T2CON^0;
+ 184      =1  
+ 185      =1  // (bits in CCON)
+ 186      =1  sbit CF       = CCON^7;
+ 187      =1  sbit CR       = CCON^6;
+ 188      =1  sbit CCF5     = CCON^5;
+ 189      =1  sbit CCF4     = CCON^4;
+ 190      =1  sbit CCF3     = CCON^3;
+ 191      =1  sbit CCF2     = CCON^2;
+ 192      =1  sbit CCF1     = CCON^1;
+ 193      =1  sbit CCF0     = CCON^0;
+ 194      =1  
+ 195      =1  // (bits in XICON)
+ 196      =1  sbit PX3      = XICON^7;
+ 197      =1  sbit EX3      = XICON^6;
+ 198      =1  sbit IE3      = XICON^5;
+ 199      =1  sbit IT3      = XICON^4;
+ 200      =1  sbit PX2      = XICON^3;
+ 201      =1  sbit EX2      = XICON^2;
+ 202      =1  sbit IE2      = XICON^1;
+ 203      =1  sbit IT2      = XICON^0;
+ 204      =1  
+ 205      =1  // (bits in P0)
+ 206      =1  sbit P07      = P0^7;
+ 207      =1  sbit P06      = P0^6;
+ 208      =1  sbit P05      = P0^5;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 9   
+
+ 209      =1  sbit P04      = P0^4;
+ 210      =1  sbit P03      = P0^3;
+ 211      =1  sbit P02      = P0^2;
+ 212      =1  sbit P01      = P0^1;
+ 213      =1  sbit P00      = P0^0;
+ 214      =1  
+ 215      =1  // (bits in P1)
+ 216      =1  sbit P17      = P1^7;
+ 217      =1  sbit P16      = P1^6;
+ 218      =1  sbit P15      = P1^5;
+ 219      =1  sbit P14      = P1^4;
+ 220      =1  sbit P13      = P1^3;
+ 221      =1  sbit P12      = P1^2;
+ 222      =1  sbit P11      = P1^1;
+ 223      =1  sbit P10      = P1^0;
+ 224      =1  
+ 225      =1  // (bits in P2)
+ 226      =1  sbit P27      = P2^7;
+ 227      =1  sbit P26      = P2^6;
+ 228      =1  sbit P25      = P2^5;
+ 229      =1  sbit P24      = P2^4;
+ 230      =1  sbit P23      = P2^3;
+ 231      =1  sbit P22      = P2^2;
+ 232      =1  sbit P21      = P2^1;
+ 233      =1  sbit P20      = P2^0;
+ 234      =1  
+ 235      =1  // (bits in P3)
+ 236      =1  sbit P37      = P3^7;
+ 237      =1  sbit P36      = P3^6;
+ 238      =1  sbit P35      = P3^5;
+ 239      =1  sbit P34      = P3^4;
+ 240      =1  sbit P33      = P3^3;
+ 241      =1  sbit P32      = P3^2;
+ 242      =1  sbit P31      = P3^1;
+ 243      =1  sbit P30      = P3^0;
+ 244      =1  
+ 245      =1  // (bits in P4)
+ 246      =1  sbit P43      = P4^3;
+ 247      =1  sbit P42      = P4^2;
+ 248      =1  sbit P41      = P4^1;
+ 249      =1  sbit P40      = P4^0;
+ 250      =1  
+ 251      =1  // (bits in P1, alternate)
+ 252      =1  sbit T2EX     = P1^1;
+ 253      =1  sbit T2       = P1^0;
+ 254      =1  sbit S2TXD    = P1^3;
+ 255      =1  sbit S2RXD    = P1^2;
+ 256      =1  sbit SPI_CLK  = P1^7;
+ 257      =1  sbit SPI_MISO = P1^6;
+ 258      =1  sbit SPI_MOSI = P1^5;
+ 259      =1  sbit SPI_SS   = P1^4;
+ 260      =1  sbit CEX5     = P1^7;
+ 261      =1  sbit CEX4     = P1^6;
+ 262      =1  sbit CEX3     = P1^5;
+ 263      =1  sbit CEX2     = P1^4;
+ 264      =1  sbit CEX1     = P1^3;
+ 265      =1  sbit CEX0     = P1^2;
+ 266      =1  sbit ECI      = P1^1;
+ 267      =1  
+ 268      =1  // (bits in P3, alternate)
+ 269      =1  sbit RD       = P3^7;
+ 270      =1  sbit WR       = P3^6;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 10  
+
+ 271      =1  sbit T1       = P3^5;
+ 272      =1  sbit T0       = P3^4;
+ 273      =1  sbit INT1     = P3^3;
+ 274      =1  sbit INT0     = P3^2;
+ 275      =1  sbit TXD      = P3^1;
+ 276      =1  sbit RXD      = P3^0;
+ 277      =1  sbit S2CKO    = P3^5;
+ 278      =1  sbit T0CKO    = P3^4;
+ 279      =1  
+ 280      =1  // (bits in P4, alternate)
+ 281      =1  sbit INT2     = P4^3;
+ 282      =1  sbit INT3     = P4^2;
+ 283      =1  
+ 284      =1  #endif
+   6          
+   7          #include "modbus.h"
+   1      =1  
+   2      =1  #ifndef __MODBUS_H__
+   3      =1  #define __MODBUS_H__
+   4      =1  
+   5      =1  
+   6      =1  #include "..\stdint.h"
+   1      =2  /*-------------------------------------------------------------------------
+   2      =2     stdint.h - ISO C99 7.18 Integer types <stdint.h>
+   3      =2  
+   4      =2     Copyright (C) 2005, Maarten Brock, sourceforge.brock@dse.nl
+   5      =2     Copyright (C) 2011, Philipp Klaus Krause, pkk@spth.de
+   6      =2  
+   7      =2     This library is free software; you can redistribute it and/or modify it
+   8      =2     under the terms of the GNU General Public License as published by the
+   9      =2     Free Software Foundation; either version 2, or (at your option) any
+  10      =2     later version.
+  11      =2  
+  12      =2     This library is distributed in the hope that it will be useful,
+  13      =2     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  14      =2     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  15      =2     GNU General Public License for more details.
+  16      =2  
+  17      =2     You should have received a copy of the GNU General Public License 
+  18      =2     along with this library; see the file COPYING. If not, write to the
+  19      =2     Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
+  20      =2     MA 02110-1301, USA.
+  21      =2  
+  22      =2     As a special exception, if you link this library with other files,
+  23      =2     some of which are compiled with SDCC, to produce an executable,
+  24      =2     this library does not by itself cause the resulting executable to
+  25      =2     be covered by the GNU General Public License. This exception does
+  26      =2     not however invalidate any other reasons why the executable file
+  27      =2     might be covered by the GNU General Public License.
+  28      =2  -------------------------------------------------------------------------*/
+  29      =2  
+  30      =2  #ifndef _STDINT_H
+           =2 #define _STDINT_H       1
+           =2 
+           =2 /* Exact integral types.  */
+           =2 
+           =2 #if !defined(__SDCC_pic14) && !defined(__SDCC_pic16)
+           =2 #if __STDC_VERSION__ >= 199901L
+           =2 #define __SDCC_LONGLONG
+           =2 #endif
+           =2 #endif
+           =2 
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 11  
+
+           =2 /* Signed.  */
+           =2 
+           =2 typedef signed char             int8_t;
+           =2 typedef short int               int16_t;
+           =2 typedef long int                int32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint8_t;
+           =2 typedef unsigned short int      uint16_t;
+           =2 typedef unsigned long int       uint32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint64_t;
+           =2 #endif
+           =2 
+           =2 /* Small types.  */
+           =2 
+           =2 /* Signed.  */
+           =2 typedef signed char             int_least8_t;
+           =2 typedef short int               int_least16_t;
+           =2 typedef long int                int_least32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int_least64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint_least8_t;
+           =2 typedef unsigned short int      uint_least16_t;
+           =2 typedef unsigned long int       uint_least32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint_least64_t;
+           =2 #endif
+           =2 
+           =2 /* Fast types.  */
+           =2 
+           =2 /* Signed.  */
+           =2 typedef signed char             int_fast8_t;
+           =2 typedef int                     int_fast16_t;
+           =2 typedef long int                int_fast32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int_fast64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint_fast8_t;
+           =2 typedef unsigned int            uint_fast16_t;
+           =2 typedef unsigned long int       uint_fast32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint_fast64_t;
+           =2 #endif
+           =2 
+           =2 /* Types for `void *' pointers.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2   typedef long int              intptr_t;
+           =2   typedef unsigned long int     uintptr_t;
+           =2 #else
+           =2   typedef int                   intptr_t;
+           =2   typedef unsigned int          uintptr_t;
+           =2 #endif
+           =2 
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 12  
+
+           =2 
+           =2 /* Largest integral types.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 typedef long int                intmax_t;
+           =2 typedef unsigned long int       uintmax_t;
+           =2 #else
+           =2 typedef long long int           intmax_t;
+           =2 typedef unsigned long long int  uintmax_t;
+           =2 #endif
+           =2 
+           =2 /* Limits of integral types.  */
+           =2 
+           =2 /* Minimum of signed integral types.  */
+           =2 #define INT8_MIN               (-128)
+           =2 #define INT16_MIN              (-32767-1)
+           =2 #define INT32_MIN              (-2147483647L-1)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_MIN              (-9223372036854775807LL-1)
+           =2 #endif
+           =2 
+           =2 /* Maximum of signed integral types.  */
+           =2 #define INT8_MAX               (127)
+           =2 #define INT16_MAX              (32767)
+           =2 #define INT32_MAX              (2147483647L)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_MAX              (9223372036854775807LL)
+           =2 #endif
+           =2 
+           =2 /* Maximum of unsigned integral types.  */
+           =2 #define UINT8_MAX              (255)
+           =2 #define UINT16_MAX             (65535)
+           =2 #define UINT32_MAX             (4294967295UL)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT64_MAX             (18446744073709551615ULL)
+           =2 #endif
+           =2 
+           =2 /* Minimum of signed integral types having a minimum size.  */
+           =2 #define INT_LEAST8_MIN         INT8_MIN
+           =2 #define INT_LEAST16_MIN        INT16_MIN
+           =2 #define INT_LEAST32_MIN        INT32_MIN
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_LEAST64_MIN        INT64_MIN
+           =2 #endif
+           =2 
+           =2 /* Maximum of signed integral types having a minimum size.  */
+           =2 #define INT_LEAST8_MAX         INT8_MAX
+           =2 #define INT_LEAST16_MAX        INT16_MAX
+           =2 #define INT_LEAST32_MAX        INT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_LEAST64_MAX        INT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Maximum of unsigned integral types having a minimum size.  */
+           =2 #define UINT_LEAST8_MAX        UINT8_MAX
+           =2 #define UINT_LEAST16_MAX       UINT16_MAX
+           =2 #define UINT_LEAST32_MAX       UINT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT_LEAST64_MAX       UINT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Minimum of fast signed integral types having a minimum size.  */
+           =2 #define INT_FAST8_MIN          INT8_MIN
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 13  
+
+           =2 #define INT_FAST16_MIN         INT16_MIN
+           =2 #define INT_FAST32_MIN         INT32_MIN
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_FAST64_MIN         INT64_MIN
+           =2 #endif
+           =2 
+           =2 /* Maximum of fast signed integral types having a minimum size.  */
+           =2 #define INT_FAST8_MAX          INT8_MAX
+           =2 #define INT_FAST16_MAX         INT16_MAX
+           =2 #define INT_FAST32_MAX         INT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_FAST64_MAX         INT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Maximum of fast unsigned integral types having a minimum size.  */
+           =2 #define UINT_FAST8_MAX         UINT8_MAX
+           =2 #define UINT_FAST16_MAX        UINT16_MAX
+           =2 #define UINT_FAST32_MAX        UINT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT_FAST64_MAX        UINT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Values to test for integral types holding `void *' pointer.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2 #define INTPTR_MIN             (-2147483647L-1)
+           =2 #define INTPTR_MAX             (2147483647L)
+           =2 #define UINTPTR_MAX            (4294967295UL)
+           =2 #else
+           =2 #define INTPTR_MIN             (-32767-1)
+           =2 #define INTPTR_MAX             (32767)
+           =2 #define UINTPTR_MAX            (65535)
+           =2 #endif
+           =2 
+           =2 /* Minimum for largest signed integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define INTMAX_MIN             (-2147483647L-1)
+           =2 #else
+           =2 #define INTMAX_MIN             (-9223372036854775807LL-1)
+           =2 #endif
+           =2 
+           =2 /* Maximum for largest signed integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define INTMAX_MAX             (2147483647L)
+           =2 #else
+           =2 #define INTMAX_MAX             (9223372036854775807LL)
+           =2 #endif
+           =2 
+           =2 /* Maximum for largest unsigned integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define UINTMAX_MAX            (4294967295UL)
+           =2 #else
+           =2 #define UINTMAX_MAX            (18446744073709551615ULL)
+           =2 #endif
+           =2 
+           =2 /* Limits of other integer types.  */
+           =2 
+           =2 /* Limits of `ptrdiff_t' type.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2 #define PTRDIFF_MIN           (-2147483647L-1)
+           =2 #define PTRDIFF_MAX           (2147483647L)
+           =2 #else
+           =2 #define PTRDIFF_MIN           (-32767-1)
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 14  
+
+           =2 #define PTRDIFF_MAX           (32767)
+           =2 #endif
+           =2 
+           =2 /* */
+           =2 #define SIG_ATOMIC_MIN        (0)
+           =2 #define SIG_ATOMIC_MAX        (255)
+           =2 
+           =2 /* Limit of `size_t' type.  */
+           =2 #define SIZE_MAX               (65535u)
+           =2 
+           =2 /* Signed.  */
+           =2 #define INT8_C(c)      c
+           =2 #define INT16_C(c)     c
+           =2 #define INT32_C(c)     c ## L
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_C(c)     c ## LL
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 #define UINT8_C(c)     c ## U
+           =2 #define UINT16_C(c)    c ## U
+           =2 #define UINT32_C(c)    c ## UL
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT64_C(c)    c ## ULL
+           =2 #endif
+           =2 
+           =2 #define WCHAR_MIN      0
+           =2 #define WCHAR_MAX      0xffffffff
+           =2 
+           =2 #define WINT_MIN       0
+           =2 #define WINT_MAX       0xffffffff
+           =2 
+           =2 /* Maximal type.  */
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INTMAX_C(c)    c ## LL
+           =2 #define UINTMAX_C(c)   c ## ULL
+           =2 #else
+           =2 #define INTMAX_C(c)    c ## L
+           =2 #define UINTMAX_C(c)   c ## UL
+           =2 #endif
+           =2 
+           =2 /* Bounds-checking interfaces from annex K of the C11 standard. */
+           =2 #if defined (__STDC_WANT_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__
+           =2 #define RSIZE_MAX SIZE_MAX
+           =2 #endif
+           =2 
+           =2 #endif /* stdint.h */
+ 274      =2  
+   7      =1  
+   8      =1  
+   9      =1  /* ASCII FRAME size */
+  10      =1  #define ASCII_FRAME_SIZE 60   //CHANGE  
+  11      =1  
+  12      =1  /* ASCII FRAME END CHARS */
+  13      =1  #define CR 0x0D
+  14      =1  #define LF 0x0A         
+  15      =1  
+  16      =1  /* ASCII FRAME */
+  17      =1  extern uint8_t idata ascii_frame[ASCII_FRAME_SIZE]; // max size = 255
+  18      =1  extern uint8_t idata data_count;
+  19      =1  extern uint8_t idata send_count;
+  20      =1  extern bit broadcast;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 15  
+
+  21      =1  
+  22      =1  
+  23      =1  /* functions prototypes*/
+  24      =1  void execute_modbus_command(void);
+  25      =1  void gen_lrc(void);
+  26      =1  void clear_frame(void);
+  27      =1  uint8_t lrc_calc(void);
+  28      =1  void tx_assci_frame(void);
+  29      =1  
+  30      =1  void ResponseReadCoilsStatus_01(void);
+  31      =1  void ResponseReadInputStatus_02(void);
+  32      =1  void ResponseReadHoldingRegisters_03(void);
+  33      =1  void ResponseReadInputRegisters_04(void);
+  34      =1  void ResponseForceSingleCoil_05(void);
+  35      =1  void ResponsePresetSingleRegister_06(void);
+  36      =1  void ResponseForceMultipleCoils_15(void);
+  37      =1  void ResponsePresetMultipleRegisters_16(void);
+  38      =1  
+  39      =1  
+  40      =1  #endif  //__MODBUS_H__
+   8          #include "main.h"
+   1      =1  
+   2      =1  #ifndef __MAIN_H__
+   3      =1  #define __MAIN_H__
+   4      =1  
+   5      =1  
+   6      =1  #include "REG_MPC82G516.h"
+   1      =2  #ifndef __REG_MPC82G516_H
+           =2 #define __REG_MPC82G516_H
+           =2 
+           =2 // MPC82G516
+           =2 
+           =2 
+           =2 // (System)
+           =2 sfr ACC       = 0xE0;
+           =2 sfr B         = 0xF0;
+           =2 sfr SP        = 0x81;
+           =2 sfr DPL       = 0x82;
+           =2 sfr DPH       = 0x83;
+           =2 sfr PSW       = 0xD0;
+           =2 
+           =2 // (Interrupt)
+           =2 sfr IE        = 0xA8;
+           =2 sfr AUXIE     = 0xAD;
+           =2 sfr XICON     = 0xC0;
+           =2 sfr IP        = 0xB8;
+           =2 sfr IPH       = 0xB7;
+           =2 sfr AUXIP     = 0xAE;
+           =2 sfr AUXIPH    = 0xAF;
+           =2 
+           =2 // (I/O Port)
+           =2 sfr P0        = 0x80;
+           =2 sfr P1        = 0x90;
+           =2 sfr P2        = 0xA0;
+           =2 sfr P3        = 0xB0;
+           =2 sfr P4        = 0xE8;
+           =2 sfr P0M0      = 0x93;
+           =2 sfr P0M1      = 0x94;
+           =2 sfr P1M0      = 0x91;
+           =2 sfr P1M1      = 0x92;
+           =2 sfr P2M0      = 0x95;
+           =2 sfr P2M1      = 0x96;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 16  
+
+           =2 sfr P3M0      = 0xB1;
+           =2 sfr P3M1      = 0xB2;
+           =2 sfr P4M0      = 0xB3;
+           =2 sfr P4M1      = 0xB4;
+           =2 
+           =2 // (Timer)
+           =2 sfr TCON      = 0x88;
+           =2 sfr TMOD      = 0x89;
+           =2 sfr T2CON     = 0xC8;
+           =2 sfr T2MOD     = 0xC9;
+           =2 sfr RCAP2L    = 0xCA;
+           =2 sfr RCAP2H    = 0xCB;
+           =2 sfr TL0       = 0x8A;
+           =2 sfr TH0       = 0x8C;
+           =2 sfr TL1       = 0x8B;
+           =2 sfr TH1       = 0x8D;
+           =2 sfr TL2       = 0xCC;
+           =2 sfr TH2       = 0xCD;
+           =2 
+           =2 // (Serial Port)
+           =2 sfr SCON      = 0x98;
+           =2 sfr SBUF      = 0x99;
+           =2 sfr SADDR     = 0xA9;
+           =2 sfr SADEN     = 0xB9;
+           =2 sfr S2CON     = 0xAA;
+           =2 sfr S2BRT     = 0xBA;
+           =2 sfr S2BUF     = 0x9A;
+           =2 
+           =2 // (ADC)
+           =2 sfr ADCTL     = 0xC5;
+           =2 sfr ADCH      = 0xC6;
+           =2 sfr ADCL      = 0xBE;
+           =2 sfr ADC       = 0xC6; //the same as ADCH, the higher 8 bits
+           =2 
+           =2 // (Keypad Interrupt)
+           =2 sfr KBCON     = 0xD6;
+           =2 sfr KBPATN    = 0xD5;
+           =2 sfr KBMASK    = 0xD7;
+           =2 
+           =2 // (SPI)
+           =2 sfr SPICTL    = 0x85;
+           =2 sfr SPIDAT    = 0x86;
+           =2 sfr SPISTAT   = 0x84;
+           =2 
+           =2 // (PCA)
+           =2 sfr CCON      = 0xD8;
+           =2 sfr CMOD      = 0xD9;
+           =2 sfr CL        = 0xE9;
+           =2 sfr CH        = 0xF9;
+           =2 sfr CCAPM0    = 0xDA;
+           =2 sfr CCAPM1    = 0xDB;
+           =2 sfr CCAPM2    = 0xDC;
+           =2 sfr CCAPM3    = 0xDD;
+           =2 sfr CCAPM4    = 0xDE;
+           =2 sfr CCAPM5    = 0xDF;
+           =2 sfr CCAP0H    = 0xFA;
+           =2 sfr CCAP0L    = 0xEA;
+           =2 sfr CCAP1H    = 0xFB;
+           =2 sfr CCAP1L    = 0xEB;
+           =2 sfr CCAP2H    = 0xFC;
+           =2 sfr CCAP2L    = 0xEC;
+           =2 sfr CCAP3H    = 0xFD;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 17  
+
+           =2 sfr CCAP3L    = 0xED;
+           =2 sfr CCAP4H    = 0xFE;
+           =2 sfr CCAP4L    = 0xEE;
+           =2 sfr CCAP5H    = 0xFF;
+           =2 sfr CCAP5L    = 0xEF;
+           =2 sfr PCAPWM0   = 0xF2;
+           =2 sfr PCAPWM1   = 0xF3;
+           =2 sfr PCAPWM2   = 0xF4;
+           =2 sfr PCAPWM3   = 0xF5;
+           =2 sfr PCAPWM4   = 0xF6;
+           =2 sfr PCAPWM5   = 0xF7;
+           =2 
+           =2 // (Others)
+           =2 sfr PCON      = 0x87;
+           =2 sfr PCON2     = 0xC7;
+           =2 sfr AUXR      = 0x8E;
+           =2 sfr AUXR1     = 0xA2;
+           =2 sfr AUXR2     = 0xA6;
+           =2 sfr STRETCH   = 0x8F;
+           =2 sfr EVRCR     = 0x97;
+           =2 sfr WDTCR     = 0xE1;
+           =2 
+           =2 // (ISP)
+           =2 sfr ISPCR     = 0xE7;
+           =2 sfr IFMT      = 0xE5;
+           =2 sfr IFD       = 0xE2;
+           =2 sfr IFADRH    = 0xE3;
+           =2 sfr IFADRL    = 0xE4;
+           =2 sfr SCMD      = 0xE6;
+           =2 
+           =2 // (bits in PSW)
+           =2 sbit CY       = PSW^7;
+           =2 sbit AC       = PSW^6;
+           =2 sbit F0       = PSW^5;
+           =2 sbit RS1      = PSW^4;
+           =2 sbit RS0      = PSW^3;
+           =2 sbit OV       = PSW^2;
+           =2 sbit P        = PSW^0;
+           =2 
+           =2 // (bits in IE)
+           =2 sbit EA       = IE^7;
+           =2 sbit ET2      = IE^5;
+           =2 sbit ES       = IE^4;
+           =2 sbit ET1      = IE^3;
+           =2 sbit EX1      = IE^2;
+           =2 sbit ET0      = IE^1;
+           =2 sbit EX0      = IE^0;
+           =2 
+           =2 // (bits in IP)
+           =2 sbit PT2      = IP^5;
+           =2 sbit PS       = IP^4;
+           =2 sbit PT1      = IP^3;
+           =2 sbit PX1      = IP^2;
+           =2 sbit PT0      = IP^1;
+           =2 sbit PX0      = IP^0;
+           =2 
+           =2 // (bits in SCON)
+           =2 sbit FE       = SCON^7;
+           =2 sbit SM0      = SCON^7;
+           =2 sbit SM1      = SCON^6;
+           =2 sbit SM2      = SCON^5;
+           =2 sbit REN      = SCON^4;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 18  
+
+           =2 sbit TB8      = SCON^3;
+           =2 sbit RB8      = SCON^2;
+           =2 sbit TI       = SCON^1;
+           =2 sbit RI       = SCON^0;
+           =2 
+           =2 // (bits in TCON)
+           =2 sbit TF1      = TCON^7;
+           =2 sbit TR1      = TCON^6;
+           =2 sbit TF0      = TCON^5;
+           =2 sbit TR0      = TCON^4;
+           =2 sbit IE1      = TCON^3;
+           =2 sbit IT1      = TCON^2;
+           =2 sbit IE0      = TCON^1;
+           =2 sbit IT0      = TCON^0;
+           =2 
+           =2 // (bits in T2CON)
+           =2 sbit TF2      = T2CON^7;
+           =2 sbit EXF2     = T2CON^6;
+           =2 sbit RCLK     = T2CON^5;
+           =2 sbit TCLK     = T2CON^4;
+           =2 sbit EXEN2    = T2CON^3;
+           =2 sbit TR2      = T2CON^2;
+           =2 sbit C_T2     = T2CON^1;
+           =2 sbit CP_RL2   = T2CON^0;
+           =2 
+           =2 // (bits in CCON)
+           =2 sbit CF       = CCON^7;
+           =2 sbit CR       = CCON^6;
+           =2 sbit CCF5     = CCON^5;
+           =2 sbit CCF4     = CCON^4;
+           =2 sbit CCF3     = CCON^3;
+           =2 sbit CCF2     = CCON^2;
+           =2 sbit CCF1     = CCON^1;
+           =2 sbit CCF0     = CCON^0;
+           =2 
+           =2 // (bits in XICON)
+           =2 sbit PX3      = XICON^7;
+           =2 sbit EX3      = XICON^6;
+           =2 sbit IE3      = XICON^5;
+           =2 sbit IT3      = XICON^4;
+           =2 sbit PX2      = XICON^3;
+           =2 sbit EX2      = XICON^2;
+           =2 sbit IE2      = XICON^1;
+           =2 sbit IT2      = XICON^0;
+           =2 
+           =2 // (bits in P0)
+           =2 sbit P07      = P0^7;
+           =2 sbit P06      = P0^6;
+           =2 sbit P05      = P0^5;
+           =2 sbit P04      = P0^4;
+           =2 sbit P03      = P0^3;
+           =2 sbit P02      = P0^2;
+           =2 sbit P01      = P0^1;
+           =2 sbit P00      = P0^0;
+           =2 
+           =2 // (bits in P1)
+           =2 sbit P17      = P1^7;
+           =2 sbit P16      = P1^6;
+           =2 sbit P15      = P1^5;
+           =2 sbit P14      = P1^4;
+           =2 sbit P13      = P1^3;
+           =2 sbit P12      = P1^2;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 19  
+
+           =2 sbit P11      = P1^1;
+           =2 sbit P10      = P1^0;
+           =2 
+           =2 // (bits in P2)
+           =2 sbit P27      = P2^7;
+           =2 sbit P26      = P2^6;
+           =2 sbit P25      = P2^5;
+           =2 sbit P24      = P2^4;
+           =2 sbit P23      = P2^3;
+           =2 sbit P22      = P2^2;
+           =2 sbit P21      = P2^1;
+           =2 sbit P20      = P2^0;
+           =2 
+           =2 // (bits in P3)
+           =2 sbit P37      = P3^7;
+           =2 sbit P36      = P3^6;
+           =2 sbit P35      = P3^5;
+           =2 sbit P34      = P3^4;
+           =2 sbit P33      = P3^3;
+           =2 sbit P32      = P3^2;
+           =2 sbit P31      = P3^1;
+           =2 sbit P30      = P3^0;
+           =2 
+           =2 // (bits in P4)
+           =2 sbit P43      = P4^3;
+           =2 sbit P42      = P4^2;
+           =2 sbit P41      = P4^1;
+           =2 sbit P40      = P4^0;
+           =2 
+           =2 // (bits in P1, alternate)
+           =2 sbit T2EX     = P1^1;
+           =2 sbit T2       = P1^0;
+           =2 sbit S2TXD    = P1^3;
+           =2 sbit S2RXD    = P1^2;
+           =2 sbit SPI_CLK  = P1^7;
+           =2 sbit SPI_MISO = P1^6;
+           =2 sbit SPI_MOSI = P1^5;
+           =2 sbit SPI_SS   = P1^4;
+           =2 sbit CEX5     = P1^7;
+           =2 sbit CEX4     = P1^6;
+           =2 sbit CEX3     = P1^5;
+           =2 sbit CEX2     = P1^4;
+           =2 sbit CEX1     = P1^3;
+           =2 sbit CEX0     = P1^2;
+           =2 sbit ECI      = P1^1;
+           =2 
+           =2 // (bits in P3, alternate)
+           =2 sbit RD       = P3^7;
+           =2 sbit WR       = P3^6;
+           =2 sbit T1       = P3^5;
+           =2 sbit T0       = P3^4;
+           =2 sbit INT1     = P3^3;
+           =2 sbit INT0     = P3^2;
+           =2 sbit TXD      = P3^1;
+           =2 sbit RXD      = P3^0;
+           =2 sbit S2CKO    = P3^5;
+           =2 sbit T0CKO    = P3^4;
+           =2 
+           =2 // (bits in P4, alternate)
+           =2 sbit INT2     = P4^3;
+           =2 sbit INT3     = P4^2;
+           =2 
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 20  
+
+           =2 #endif
+   7      =1   
+   8      =1  ///* data types */
+   9      =1  //typedef unsigned char   uint8;
+  10      =1  //typedef unsigned int    uint16;
+  11      =1  //typedef unsigned long   uint32;
+  12      =1  
+  13      =1  /* RS485 enable/disable terminal */
+  14      =1  sbit RS485En  =  P3^2;
+  15      =1       
+  16      =1  /* timer conf for uart baudrate */
+  17      =1  #define TIMER_HIGHT_1 0xF4
+  18      =1  #define TIMER_LOW_1   0xF4      // 2400
+  19      =1  
+  20      =1  /* timer conf for PWM */
+  21      =1  #define TIMER_HIGHT_0 0xF7      //2ms conf
+  22      =1  #define TIMER_LOW_0   0x86
+  23      =1  
+  24      =1  /* Display on / off states */
+  25      =1  #define DISPLAY_ON 0
+  26      =1  #define DISPLAY_OFF 1
+  27      =1  
+  28      =1  //void delay_ms(unsigned int d);
+  29      =1  
+  30      =1  #endif  //__MAIN_H__
+   9          #include "..\ascii.h"
+   1      =1  
+   2      =1  #ifndef __ASCII_H__
+   3      =1  #define __ASCII_H__
+   4      =1  
+   5      =1  
+   6      =1  #include "stdint.h"
+   1      =2  /*-------------------------------------------------------------------------
+   2      =2     stdint.h - ISO C99 7.18 Integer types <stdint.h>
+   3      =2  
+   4      =2     Copyright (C) 2005, Maarten Brock, sourceforge.brock@dse.nl
+   5      =2     Copyright (C) 2011, Philipp Klaus Krause, pkk@spth.de
+   6      =2  
+   7      =2     This library is free software; you can redistribute it and/or modify it
+   8      =2     under the terms of the GNU General Public License as published by the
+   9      =2     Free Software Foundation; either version 2, or (at your option) any
+  10      =2     later version.
+  11      =2  
+  12      =2     This library is distributed in the hope that it will be useful,
+  13      =2     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  14      =2     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  15      =2     GNU General Public License for more details.
+  16      =2  
+  17      =2     You should have received a copy of the GNU General Public License 
+  18      =2     along with this library; see the file COPYING. If not, write to the
+  19      =2     Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
+  20      =2     MA 02110-1301, USA.
+  21      =2  
+  22      =2     As a special exception, if you link this library with other files,
+  23      =2     some of which are compiled with SDCC, to produce an executable,
+  24      =2     this library does not by itself cause the resulting executable to
+  25      =2     be covered by the GNU General Public License. This exception does
+  26      =2     not however invalidate any other reasons why the executable file
+  27      =2     might be covered by the GNU General Public License.
+  28      =2  -------------------------------------------------------------------------*/
+  29      =2  
+  30      =2  #ifndef _STDINT_H
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 21  
+
+           =2 #define _STDINT_H       1
+           =2 
+           =2 /* Exact integral types.  */
+           =2 
+           =2 #if !defined(__SDCC_pic14) && !defined(__SDCC_pic16)
+           =2 #if __STDC_VERSION__ >= 199901L
+           =2 #define __SDCC_LONGLONG
+           =2 #endif
+           =2 #endif
+           =2 
+           =2 /* Signed.  */
+           =2 
+           =2 typedef signed char             int8_t;
+           =2 typedef short int               int16_t;
+           =2 typedef long int                int32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint8_t;
+           =2 typedef unsigned short int      uint16_t;
+           =2 typedef unsigned long int       uint32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint64_t;
+           =2 #endif
+           =2 
+           =2 /* Small types.  */
+           =2 
+           =2 /* Signed.  */
+           =2 typedef signed char             int_least8_t;
+           =2 typedef short int               int_least16_t;
+           =2 typedef long int                int_least32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int_least64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint_least8_t;
+           =2 typedef unsigned short int      uint_least16_t;
+           =2 typedef unsigned long int       uint_least32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint_least64_t;
+           =2 #endif
+           =2 
+           =2 /* Fast types.  */
+           =2 
+           =2 /* Signed.  */
+           =2 typedef signed char             int_fast8_t;
+           =2 typedef int                     int_fast16_t;
+           =2 typedef long int                int_fast32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int_fast64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint_fast8_t;
+           =2 typedef unsigned int            uint_fast16_t;
+           =2 typedef unsigned long int       uint_fast32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint_fast64_t;
+           =2 #endif
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 22  
+
+           =2 
+           =2 /* Types for `void *' pointers.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2   typedef long int              intptr_t;
+           =2   typedef unsigned long int     uintptr_t;
+           =2 #else
+           =2   typedef int                   intptr_t;
+           =2   typedef unsigned int          uintptr_t;
+           =2 #endif
+           =2 
+           =2 
+           =2 /* Largest integral types.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 typedef long int                intmax_t;
+           =2 typedef unsigned long int       uintmax_t;
+           =2 #else
+           =2 typedef long long int           intmax_t;
+           =2 typedef unsigned long long int  uintmax_t;
+           =2 #endif
+           =2 
+           =2 /* Limits of integral types.  */
+           =2 
+           =2 /* Minimum of signed integral types.  */
+           =2 #define INT8_MIN               (-128)
+           =2 #define INT16_MIN              (-32767-1)
+           =2 #define INT32_MIN              (-2147483647L-1)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_MIN              (-9223372036854775807LL-1)
+           =2 #endif
+           =2 
+           =2 /* Maximum of signed integral types.  */
+           =2 #define INT8_MAX               (127)
+           =2 #define INT16_MAX              (32767)
+           =2 #define INT32_MAX              (2147483647L)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_MAX              (9223372036854775807LL)
+           =2 #endif
+           =2 
+           =2 /* Maximum of unsigned integral types.  */
+           =2 #define UINT8_MAX              (255)
+           =2 #define UINT16_MAX             (65535)
+           =2 #define UINT32_MAX             (4294967295UL)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT64_MAX             (18446744073709551615ULL)
+           =2 #endif
+           =2 
+           =2 /* Minimum of signed integral types having a minimum size.  */
+           =2 #define INT_LEAST8_MIN         INT8_MIN
+           =2 #define INT_LEAST16_MIN        INT16_MIN
+           =2 #define INT_LEAST32_MIN        INT32_MIN
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_LEAST64_MIN        INT64_MIN
+           =2 #endif
+           =2 
+           =2 /* Maximum of signed integral types having a minimum size.  */
+           =2 #define INT_LEAST8_MAX         INT8_MAX
+           =2 #define INT_LEAST16_MAX        INT16_MAX
+           =2 #define INT_LEAST32_MAX        INT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_LEAST64_MAX        INT64_MAX
+           =2 #endif
+           =2 
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 23  
+
+           =2 /* Maximum of unsigned integral types having a minimum size.  */
+           =2 #define UINT_LEAST8_MAX        UINT8_MAX
+           =2 #define UINT_LEAST16_MAX       UINT16_MAX
+           =2 #define UINT_LEAST32_MAX       UINT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT_LEAST64_MAX       UINT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Minimum of fast signed integral types having a minimum size.  */
+           =2 #define INT_FAST8_MIN          INT8_MIN
+           =2 #define INT_FAST16_MIN         INT16_MIN
+           =2 #define INT_FAST32_MIN         INT32_MIN
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_FAST64_MIN         INT64_MIN
+           =2 #endif
+           =2 
+           =2 /* Maximum of fast signed integral types having a minimum size.  */
+           =2 #define INT_FAST8_MAX          INT8_MAX
+           =2 #define INT_FAST16_MAX         INT16_MAX
+           =2 #define INT_FAST32_MAX         INT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_FAST64_MAX         INT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Maximum of fast unsigned integral types having a minimum size.  */
+           =2 #define UINT_FAST8_MAX         UINT8_MAX
+           =2 #define UINT_FAST16_MAX        UINT16_MAX
+           =2 #define UINT_FAST32_MAX        UINT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT_FAST64_MAX        UINT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Values to test for integral types holding `void *' pointer.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2 #define INTPTR_MIN             (-2147483647L-1)
+           =2 #define INTPTR_MAX             (2147483647L)
+           =2 #define UINTPTR_MAX            (4294967295UL)
+           =2 #else
+           =2 #define INTPTR_MIN             (-32767-1)
+           =2 #define INTPTR_MAX             (32767)
+           =2 #define UINTPTR_MAX            (65535)
+           =2 #endif
+           =2 
+           =2 /* Minimum for largest signed integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define INTMAX_MIN             (-2147483647L-1)
+           =2 #else
+           =2 #define INTMAX_MIN             (-9223372036854775807LL-1)
+           =2 #endif
+           =2 
+           =2 /* Maximum for largest signed integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define INTMAX_MAX             (2147483647L)
+           =2 #else
+           =2 #define INTMAX_MAX             (9223372036854775807LL)
+           =2 #endif
+           =2 
+           =2 /* Maximum for largest unsigned integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define UINTMAX_MAX            (4294967295UL)
+           =2 #else
+           =2 #define UINTMAX_MAX            (18446744073709551615ULL)
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 24  
+
+           =2 #endif
+           =2 
+           =2 /* Limits of other integer types.  */
+           =2 
+           =2 /* Limits of `ptrdiff_t' type.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2 #define PTRDIFF_MIN           (-2147483647L-1)
+           =2 #define PTRDIFF_MAX           (2147483647L)
+           =2 #else
+           =2 #define PTRDIFF_MIN           (-32767-1)
+           =2 #define PTRDIFF_MAX           (32767)
+           =2 #endif
+           =2 
+           =2 /* */
+           =2 #define SIG_ATOMIC_MIN        (0)
+           =2 #define SIG_ATOMIC_MAX        (255)
+           =2 
+           =2 /* Limit of `size_t' type.  */
+           =2 #define SIZE_MAX               (65535u)
+           =2 
+           =2 /* Signed.  */
+           =2 #define INT8_C(c)      c
+           =2 #define INT16_C(c)     c
+           =2 #define INT32_C(c)     c ## L
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_C(c)     c ## LL
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 #define UINT8_C(c)     c ## U
+           =2 #define UINT16_C(c)    c ## U
+           =2 #define UINT32_C(c)    c ## UL
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT64_C(c)    c ## ULL
+           =2 #endif
+           =2 
+           =2 #define WCHAR_MIN      0
+           =2 #define WCHAR_MAX      0xffffffff
+           =2 
+           =2 #define WINT_MIN       0
+           =2 #define WINT_MAX       0xffffffff
+           =2 
+           =2 /* Maximal type.  */
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INTMAX_C(c)    c ## LL
+           =2 #define UINTMAX_C(c)   c ## ULL
+           =2 #else
+           =2 #define INTMAX_C(c)    c ## L
+           =2 #define UINTMAX_C(c)   c ## UL
+           =2 #endif
+           =2 
+           =2 /* Bounds-checking interfaces from annex K of the C11 standard. */
+           =2 #if defined (__STDC_WANT_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__
+           =2 #define RSIZE_MAX SIZE_MAX
+           =2 #endif
+           =2 
+           =2 #endif /* stdint.h */
+ 274      =2  
+   7      =1  
+   8      =1  //typedef unsigned char   uint8;
+   9      =1  //typedef unsigned int    uint16;
+  10      =1  //typedef unsigned long   uint32;
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 25  
+
+  11      =1  
+  12      =1  /* ascii temp vars */
+  13      =1  extern uint8_t ascii[4];
+  14      =1  extern uint8_t hexa[4];
+  15      =1  
+  16      =1  /* functions prototypes */
+  17      =1  void ByteToAscii(uint8_t);
+  18      =1  uint8_t NibbleToAscii(uint8_t);
+  19      =1  uint8_t AsciiToByte(uint8_t, uint8_t);
+  20      =1  void TwoByteToAscii(uint16_t);
+  21      =1  uint16_t AsciiToTwoByte(void);
+  22      =1  
+  23      =1  
+  24      =1  #endif  //__ASCII_H__
+  10          #include "slave.h"
+   1      =1  
+   2      =1  #ifndef __MODBUS_SLAVE_H__
+   3      =1  #define __MODBUS_SLAVE_H__
+   4      =1  
+   5      =1  #include "..\stdint.h"
+   1      =2  /*-------------------------------------------------------------------------
+   2      =2     stdint.h - ISO C99 7.18 Integer types <stdint.h>
+   3      =2  
+   4      =2     Copyright (C) 2005, Maarten Brock, sourceforge.brock@dse.nl
+   5      =2     Copyright (C) 2011, Philipp Klaus Krause, pkk@spth.de
+   6      =2  
+   7      =2     This library is free software; you can redistribute it and/or modify it
+   8      =2     under the terms of the GNU General Public License as published by the
+   9      =2     Free Software Foundation; either version 2, or (at your option) any
+  10      =2     later version.
+  11      =2  
+  12      =2     This library is distributed in the hope that it will be useful,
+  13      =2     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  14      =2     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  15      =2     GNU General Public License for more details.
+  16      =2  
+  17      =2     You should have received a copy of the GNU General Public License 
+  18      =2     along with this library; see the file COPYING. If not, write to the
+  19      =2     Free Software Foundation, 51 Franklin Street, Fifth Floor, Boston,
+  20      =2     MA 02110-1301, USA.
+  21      =2  
+  22      =2     As a special exception, if you link this library with other files,
+  23      =2     some of which are compiled with SDCC, to produce an executable,
+  24      =2     this library does not by itself cause the resulting executable to
+  25      =2     be covered by the GNU General Public License. This exception does
+  26      =2     not however invalidate any other reasons why the executable file
+  27      =2     might be covered by the GNU General Public License.
+  28      =2  -------------------------------------------------------------------------*/
+  29      =2  
+  30      =2  #ifndef _STDINT_H
+           =2 #define _STDINT_H       1
+           =2 
+           =2 /* Exact integral types.  */
+           =2 
+           =2 #if !defined(__SDCC_pic14) && !defined(__SDCC_pic16)
+           =2 #if __STDC_VERSION__ >= 199901L
+           =2 #define __SDCC_LONGLONG
+           =2 #endif
+           =2 #endif
+           =2 
+           =2 /* Signed.  */
+           =2 
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 26  
+
+           =2 typedef signed char             int8_t;
+           =2 typedef short int               int16_t;
+           =2 typedef long int                int32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint8_t;
+           =2 typedef unsigned short int      uint16_t;
+           =2 typedef unsigned long int       uint32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint64_t;
+           =2 #endif
+           =2 
+           =2 /* Small types.  */
+           =2 
+           =2 /* Signed.  */
+           =2 typedef signed char             int_least8_t;
+           =2 typedef short int               int_least16_t;
+           =2 typedef long int                int_least32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int_least64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint_least8_t;
+           =2 typedef unsigned short int      uint_least16_t;
+           =2 typedef unsigned long int       uint_least32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint_least64_t;
+           =2 #endif
+           =2 
+           =2 /* Fast types.  */
+           =2 
+           =2 /* Signed.  */
+           =2 typedef signed char             int_fast8_t;
+           =2 typedef int                     int_fast16_t;
+           =2 typedef long int                int_fast32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef long long int           int_fast64_t;
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 typedef unsigned char           uint_fast8_t;
+           =2 typedef unsigned int            uint_fast16_t;
+           =2 typedef unsigned long int       uint_fast32_t;
+           =2 #ifdef __SDCC_LONGLONG
+           =2 typedef unsigned long long int  uint_fast64_t;
+           =2 #endif
+           =2 
+           =2 /* Types for `void *' pointers.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2   typedef long int              intptr_t;
+           =2   typedef unsigned long int     uintptr_t;
+           =2 #else
+           =2   typedef int                   intptr_t;
+           =2   typedef unsigned int          uintptr_t;
+           =2 #endif
+           =2 
+           =2 
+           =2 /* Largest integral types.  */
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 27  
+
+           =2 #ifndef __SDCC_LONGLONG
+           =2 typedef long int                intmax_t;
+           =2 typedef unsigned long int       uintmax_t;
+           =2 #else
+           =2 typedef long long int           intmax_t;
+           =2 typedef unsigned long long int  uintmax_t;
+           =2 #endif
+           =2 
+           =2 /* Limits of integral types.  */
+           =2 
+           =2 /* Minimum of signed integral types.  */
+           =2 #define INT8_MIN               (-128)
+           =2 #define INT16_MIN              (-32767-1)
+           =2 #define INT32_MIN              (-2147483647L-1)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_MIN              (-9223372036854775807LL-1)
+           =2 #endif
+           =2 
+           =2 /* Maximum of signed integral types.  */
+           =2 #define INT8_MAX               (127)
+           =2 #define INT16_MAX              (32767)
+           =2 #define INT32_MAX              (2147483647L)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_MAX              (9223372036854775807LL)
+           =2 #endif
+           =2 
+           =2 /* Maximum of unsigned integral types.  */
+           =2 #define UINT8_MAX              (255)
+           =2 #define UINT16_MAX             (65535)
+           =2 #define UINT32_MAX             (4294967295UL)
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT64_MAX             (18446744073709551615ULL)
+           =2 #endif
+           =2 
+           =2 /* Minimum of signed integral types having a minimum size.  */
+           =2 #define INT_LEAST8_MIN         INT8_MIN
+           =2 #define INT_LEAST16_MIN        INT16_MIN
+           =2 #define INT_LEAST32_MIN        INT32_MIN
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_LEAST64_MIN        INT64_MIN
+           =2 #endif
+           =2 
+           =2 /* Maximum of signed integral types having a minimum size.  */
+           =2 #define INT_LEAST8_MAX         INT8_MAX
+           =2 #define INT_LEAST16_MAX        INT16_MAX
+           =2 #define INT_LEAST32_MAX        INT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_LEAST64_MAX        INT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Maximum of unsigned integral types having a minimum size.  */
+           =2 #define UINT_LEAST8_MAX        UINT8_MAX
+           =2 #define UINT_LEAST16_MAX       UINT16_MAX
+           =2 #define UINT_LEAST32_MAX       UINT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT_LEAST64_MAX       UINT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Minimum of fast signed integral types having a minimum size.  */
+           =2 #define INT_FAST8_MIN          INT8_MIN
+           =2 #define INT_FAST16_MIN         INT16_MIN
+           =2 #define INT_FAST32_MIN         INT32_MIN
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 28  
+
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_FAST64_MIN         INT64_MIN
+           =2 #endif
+           =2 
+           =2 /* Maximum of fast signed integral types having a minimum size.  */
+           =2 #define INT_FAST8_MAX          INT8_MAX
+           =2 #define INT_FAST16_MAX         INT16_MAX
+           =2 #define INT_FAST32_MAX         INT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT_FAST64_MAX         INT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Maximum of fast unsigned integral types having a minimum size.  */
+           =2 #define UINT_FAST8_MAX         UINT8_MAX
+           =2 #define UINT_FAST16_MAX        UINT16_MAX
+           =2 #define UINT_FAST32_MAX        UINT32_MAX
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT_FAST64_MAX        UINT64_MAX
+           =2 #endif
+           =2 
+           =2 /* Values to test for integral types holding `void *' pointer.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2 #define INTPTR_MIN             (-2147483647L-1)
+           =2 #define INTPTR_MAX             (2147483647L)
+           =2 #define UINTPTR_MAX            (4294967295UL)
+           =2 #else
+           =2 #define INTPTR_MIN             (-32767-1)
+           =2 #define INTPTR_MAX             (32767)
+           =2 #define UINTPTR_MAX            (65535)
+           =2 #endif
+           =2 
+           =2 /* Minimum for largest signed integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define INTMAX_MIN             (-2147483647L-1)
+           =2 #else
+           =2 #define INTMAX_MIN             (-9223372036854775807LL-1)
+           =2 #endif
+           =2 
+           =2 /* Maximum for largest signed integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define INTMAX_MAX             (2147483647L)
+           =2 #else
+           =2 #define INTMAX_MAX             (9223372036854775807LL)
+           =2 #endif
+           =2 
+           =2 /* Maximum for largest unsigned integral type.  */
+           =2 #ifndef __SDCC_LONGLONG
+           =2 #define UINTMAX_MAX            (4294967295UL)
+           =2 #else
+           =2 #define UINTMAX_MAX            (18446744073709551615ULL)
+           =2 #endif
+           =2 
+           =2 /* Limits of other integer types.  */
+           =2 
+           =2 /* Limits of `ptrdiff_t' type.  */
+           =2 #if defined (__SDCC_mcs51) || defined (__SDCC_ds390)
+           =2 #define PTRDIFF_MIN           (-2147483647L-1)
+           =2 #define PTRDIFF_MAX           (2147483647L)
+           =2 #else
+           =2 #define PTRDIFF_MIN           (-32767-1)
+           =2 #define PTRDIFF_MAX           (32767)
+           =2 #endif
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 29  
+
+           =2 
+           =2 /* */
+           =2 #define SIG_ATOMIC_MIN        (0)
+           =2 #define SIG_ATOMIC_MAX        (255)
+           =2 
+           =2 /* Limit of `size_t' type.  */
+           =2 #define SIZE_MAX               (65535u)
+           =2 
+           =2 /* Signed.  */
+           =2 #define INT8_C(c)      c
+           =2 #define INT16_C(c)     c
+           =2 #define INT32_C(c)     c ## L
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INT64_C(c)     c ## LL
+           =2 #endif
+           =2 
+           =2 /* Unsigned.  */
+           =2 #define UINT8_C(c)     c ## U
+           =2 #define UINT16_C(c)    c ## U
+           =2 #define UINT32_C(c)    c ## UL
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define UINT64_C(c)    c ## ULL
+           =2 #endif
+           =2 
+           =2 #define WCHAR_MIN      0
+           =2 #define WCHAR_MAX      0xffffffff
+           =2 
+           =2 #define WINT_MIN       0
+           =2 #define WINT_MAX       0xffffffff
+           =2 
+           =2 /* Maximal type.  */
+           =2 #ifdef __SDCC_LONGLONG
+           =2 #define INTMAX_C(c)    c ## LL
+           =2 #define UINTMAX_C(c)   c ## ULL
+           =2 #else
+           =2 #define INTMAX_C(c)    c ## L
+           =2 #define UINTMAX_C(c)   c ## UL
+           =2 #endif
+           =2 
+           =2 /* Bounds-checking interfaces from annex K of the C11 standard. */
+           =2 #if defined (__STDC_WANT_LIB_EXT1__) && __STDC_WANT_LIB_EXT1__
+           =2 #define RSIZE_MAX SIZE_MAX
+           =2 #endif
+           =2 
+           =2 #endif /* stdint.h */
+ 274      =2  
+   6      =1  
+   7      =1  /* slave address 1 - 255 */
+   8      =1  #define DIR 0x05    //slave dir 5d
+   9      =1  
+  10      =1  /* data range */
+  11      =1  #define MAX_COILS 1
+  12      =1  #define MAX_INPUTS 1
+  13      =1  #define MAX_HOLDING_REGISTERS 2
+  14      =1  #define MAX_INPUTS_REGISTERS 2
+  15      =1  
+  16      =1  /* internal slave memory data */
+  17      =1  extern uint8_t idata coils_array[MAX_COILS]; 
+  18      =1  extern uint8_t idata inputs_array[MAX_INPUTS];
+  19      =1  extern uint16_t idata holding_registers_array[MAX_HOLDING_REGISTERS];
+  20      =1  extern uint16_t idata inputs_registers_array[MAX_INPUTS_REGISTERS];
+  21      =1  
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 30  
+
+  22      =1  /* functions prototypes */
+  23      =1  uint8_t GetCoilValue(uint16_t adr);
+  24      =1  void SetCoilValue(uint16_t adr, uint8_t value);
+  25      =1  uint8_t GetInputValue(uint16_t adr);
+  26      =1  uint16_t GetHoldingRegisterValue(uint16_t);
+  27      =1  void SetHoldingRegisterValue(uint16_t, uint16_t);
+  28      =1  uint16_t GetInputRegisterValue(uint16_t);
+  29      =1  
+  30      =1  
+  31      =1  #endif  //__MODBUS_SLAVE_H__
+  11          
+  12          
+  13          /* ASCII FRAME */
+  14          uint8_t idata ascii_frame[ASCII_FRAME_SIZE]; // max size = 255
+  15          uint8_t idata data_count = 0;
+  16          uint8_t idata send_count = 0;
+  17          bit broadcast = 0;
+  18          
+  19          
+  20          void execute_modbus_command(void)   
+  21          {
+  22   1          uint8_t is_me = 0, fun = 0, lrc = 0;         
+  23   1      
+  24   1          if ( data_count < 9 )
+  25   1          {     
+  26   2              clear_frame();  // bad frame discard , minimun 9 characters for valid  
+  27   2              return;
+  28   2          }
+  29   1          data_count -= 2; //skip cr lf       
+  30   1          lrc = AsciiToByte(ascii_frame[data_count-2], ascii_frame[data_count-1]);
+  31   1          data_count -= 2; //skip lrc   
+  32   1          fun = lrc_calc(); 
+  33   1          if ( fun != lrc )
+  34   1          {     
+  35   2              clear_frame();  // bad LRC, frame discard    
+  36   2              return;
+  37   2          }
+  38   1           
+  39   1          /*   frame ok  */
+  40   1          is_me = AsciiToByte(ascii_frame[1], ascii_frame[2]); 
+  41   1          if ( is_me == 0 )
+  42   1          {
+  43   2              broadcast = 1;    
+  44   2          }
+  45   1          else
+  46   1          {
+  47   2              broadcast = 0;
+  48   2              if ( DIR != is_me )
+  49   2              {
+  50   3                  clear_frame();
+  51   3                  return;   
+  52   3              }
+  53   2          }
+  54   1      
+  55   1          fun = AsciiToByte(ascii_frame[3], ascii_frame[4]);    
+  56   1          switch ( fun )
+  57   1          {
+  58   2              case 1:
+  59   2              {                 
+  60   3                  ResponseReadCoilsStatus_01();            
+  61   3                  break;        
+  62   3              }
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 31  
+
+  63   2              case 2:
+  64   2              {
+  65   3                  ResponseReadInputStatus_02();
+  66   3                  break;
+  67   3              }
+  68   2              case 3:
+  69   2              {        
+  70   3                  ResponseReadHoldingRegisters_03();
+  71   3                  break;
+  72   3              }
+  73   2              case 4:
+  74   2              {
+  75   3                  ResponseReadInputRegisters_04();
+  76   3                  break;
+  77   3              }
+  78   2              case 5:
+  79   2              {           
+  80   3                  ResponseForceSingleCoil_05();            
+  81   3                  break;
+  82   3              }
+  83   2              case 6:
+  84   2              {
+  85   3                  ResponsePresetSingleRegister_06();            
+  86   3                  break;
+  87   3              }
+  88   2              case 15:
+  89   2              {                     
+  90   3                  ResponseForceMultipleCoils_15();
+  91   3                  break;            
+  92   3              }        
+  93   2              case 16:
+  94   2              {              
+  95   3                  ResponsePresetMultipleRegisters_16();
+  96   3                  break;            
+  97   3              }        
+  98   2              default: 
+  99   2              {
+ 100   3                  break;
+ 101   3              }
+ 102   2          }
+ 103   1      }
+ 104          
+ 105          void gen_lrc(void)
+ 106          {
+ 107   1          ByteToAscii(lrc_calc());
+ 108   1          ascii_frame[data_count++] = ascii[0];
+ 109   1          ascii_frame[data_count++] = ascii[1];
+ 110   1          
+ 111   1          ascii_frame[data_count++] = CR;
+ 112   1          ascii_frame[data_count++] = LF;    
+ 113   1      }
+ 114          
+ 115          void clear_frame(void)
+ 116          {    
+ 117   1          uint8_t i = 0;
+ 118   1      
+ 119   1          data_count = 0;
+ 120   1          send_count = 0;
+ 121   1          for ( i = 0; i < ASCII_FRAME_SIZE; i++ )
+ 122   1          {
+ 123   2              ascii_frame[i] = 0;
+ 124   2          }
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 32  
+
+ 125   1      }
+ 126          
+ 127          void tx_assci_frame(void)
+ 128          {
+ 129   1          if ( broadcast == 1 )
+ 130   1          {
+ 131   2              RS485En = 0;    //rx
+ 132   2              broadcast = 0;
+ 133   2              clear_frame();
+ 134   2              return ;    
+ 135   2          }
+ 136   1         
+ 137   1          RS485En = 1; // set for tx   
+ 138   1          send_count = 1;
+ 139   1          TI = 0;
+ 140   1          TB8 = 0;        
+ 141   1          SBUF = ascii_frame[0];
+ 142   1      }
+ 143          
+ 144          uint8_t lrc_calc(void) 
+ 145          {
+ 146   1          uint8_t result = 0, i = 0;            
+ 147   1      
+ 148   1          for ( i = 1; i < data_count; i+=2 )
+ 149   1          {
+ 150   2              result += AsciiToByte(ascii_frame[i], ascii_frame[i+1]);
+ 151   2          }
+ 152   1          result = ~result;
+ 153   1          return ( result + 1 );
+ 154   1      }
+ 155          
+ 156          /* function codes */
+ 157          void ResponseReadCoilsStatus_01(void) // 0x01, OK
+ 158          {
+ 159   1          uint16_t start = 0, cant = 0;
+ 160   1          uint16_t i = 0, limit = 0;
+ 161   1          uint8_t coils = 0, k = 0, new_data_count = 0;
+ 162   1      
+ 163   1          data_count = 7;  // data count byte reserved        
+ 164   1          for ( i = 0; i < 4; i++ )
+ 165   1          {
+ 166   2              ascii[i] = ascii_frame[i + 5];
+ 167   2          }    
+ 168   1          start = AsciiToTwoByte();
+ 169   1          for ( i = 0; i < 4; i++ )
+ 170   1          {
+ 171   2              ascii[i] = ascii_frame[i + 9];
+ 172   2          }    
+ 173   1          cant = AsciiToTwoByte();    
+ 174   1          limit = start + cant;
+ 175   1      
+ 176   1          /* querying coils status */
+ 177   1          for ( i = start; i < limit; i += 8 )
+ 178   1          {
+ 179   2              k = 0;
+ 180   2              coils = 0;    
+ 181   2              while ( k < 8 && i + k < limit)            
+ 182   2              {        
+ 183   3                  uint8_t val = GetCoilValue(i + k);    // status of coil i+k
+ 184   3                  if ( val == 1 ) //coil active
+ 185   3                  {
+ 186   4                      coils |= (1 << k);            
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 33  
+
+ 187   4                  }                
+ 188   3                  k++;
+ 189   3              }            
+ 190   2              ByteToAscii(coils);
+ 191   2              ascii_frame[data_count++] = ascii[0];
+ 192   2              ascii_frame[data_count++] = ascii[1];        
+ 193   2              new_data_count++;     // add one byte to response frame
+ 194   2          }
+ 195   1          
+ 196   1          ByteToAscii(new_data_count);
+ 197   1          ascii_frame[5] = ascii[0];
+ 198   1          ascii_frame[6] = ascii[1];
+ 199   1      
+ 200   1          gen_lrc();
+ 201   1          
+ 202   1          tx_assci_frame();
+ 203   1          return;
+ 204   1      }
+ 205          
+ 206          void ResponseReadInputStatus_02(void) // 0x02, OK!!!
+ 207          {
+ 208   1          uint16_t start = 0, cant = 0;
+ 209   1          uint16_t i = 0, limit = 0;
+ 210   1          uint8_t inputs = 0, k = 0, new_data_count = 0;
+ 211   1      
+ 212   1          data_count = 7;  // data count byte reserved        
+ 213   1          for ( i = 0; i < 4; i++ )
+ 214   1          {
+ 215   2              ascii[i] = ascii_frame[i + 5];
+ 216   2          }    
+ 217   1          start = AsciiToTwoByte();
+ 218   1          for ( i = 0; i < 4; i++ )
+ 219   1          {
+ 220   2              ascii[i] = ascii_frame[i + 9];
+ 221   2          }
+ 222   1          
+ 223   1          cant = AsciiToTwoByte();    
+ 224   1          limit = start + cant;
+ 225   1      
+ 226   1          /* querying inputs status */
+ 227   1          for ( i = start; i < limit; i += 8 )
+ 228   1          {
+ 229   2              k = 0;
+ 230   2              inputs = 0;    
+ 231   2              while ( k < 8 && i + k < limit)            
+ 232   2              {        
+ 233   3                  uint8_t val = GetInputValue(i + k);    // status of input i+k
+ 234   3      
+ 235   3                  if ( val == 1 ) //input active
+ 236   3                  {
+ 237   4                      inputs |= (1 << k);            
+ 238   4                  }                
+ 239   3                  k++;
+ 240   3              }            
+ 241   2              ByteToAscii(inputs);
+ 242   2              ascii_frame[data_count++] = ascii[0];
+ 243   2              ascii_frame[data_count++] = ascii[1];
+ 244   2              
+ 245   2              new_data_count++;     // add one byte to response frame
+ 246   2          }
+ 247   1          
+ 248   1          ByteToAscii(new_data_count);
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 34  
+
+ 249   1          ascii_frame[5] = ascii[0];
+ 250   1          ascii_frame[6] = ascii[1];
+ 251   1      
+ 252   1          gen_lrc();
+ 253   1          
+ 254   1          tx_assci_frame();
+ 255   1          return;
+ 256   1      }
+ 257          
+ 258          void ResponseReadHoldingRegisters_03(void)  // 0x03, OK!!!
+ 259          {
+ 260   1          uint16_t start = 0, cant = 0;
+ 261   1          uint16_t i = 0, limit = 0, status = 0;
+ 262   1          uint8_t new_data_count = 0;
+ 263   1      
+ 264   1          data_count = 7;  // data count byte reserved        
+ 265   1          for ( i = 0; i < 4; i++ )
+ 266   1          {
+ 267   2              ascii[i] = ascii_frame[i + 5];
+ 268   2          }    
+ 269   1          start = AsciiToTwoByte();
+ 270   1          for ( i = 0; i < 4; i++ )
+ 271   1          {
+ 272   2              ascii[i] = ascii_frame[i + 9];
+ 273   2          }    
+ 274   1          cant = AsciiToTwoByte();    
+ 275   1          limit = start + cant;
+ 276   1      
+ 277   1          /* querying holding registers status */
+ 278   1          for ( i = start; i < limit; i++ )
+ 279   1          {
+ 280   2              status = GetHoldingRegisterValue(i);       
+ 281   2              TwoByteToAscii(status);
+ 282   2               
+ 283   2              ascii_frame[data_count++] = ascii[3];
+ 284   2              ascii_frame[data_count++] = ascii[2];
+ 285   2              ascii_frame[data_count++] = ascii[1];
+ 286   2              ascii_frame[data_count++] = ascii[0];                          
+ 287   2          
+ 288   2              new_data_count+=2;     // add two bytes to response frame
+ 289   2          }
+ 290   1          
+ 291   1          ByteToAscii(new_data_count);
+ 292   1          ascii_frame[5] = ascii[0];
+ 293   1          ascii_frame[6] = ascii[1];
+ 294   1      
+ 295   1          gen_lrc();
+ 296   1          
+ 297   1          tx_assci_frame();
+ 298   1          return;
+ 299   1      }
+ 300          
+ 301          void ResponseReadInputRegisters_04(void)  // 0x04,  OK!!!!
+ 302          {
+ 303   1          uint16_t start = 0, cant = 0;
+ 304   1          uint16_t i = 0, limit = 0, status = 0;
+ 305   1          uint8_t new_data_count = 0;
+ 306   1          
+ 307   1          data_count = 7;  // data count byte reserved       
+ 308   1          for ( i = 0; i < 4; i++ )
+ 309   1          {
+ 310   2              ascii[i] = ascii_frame[i + 5];
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 35  
+
+ 311   2          }    
+ 312   1          start = AsciiToTwoByte();
+ 313   1          for ( i = 0; i < 4; i++ )
+ 314   1          {
+ 315   2              ascii[i] = ascii_frame[i + 9];
+ 316   2          }
+ 317   1          
+ 318   1          cant = AsciiToTwoByte();    
+ 319   1          limit = start + cant;
+ 320   1         
+ 321   1          /* querying input registers status */
+ 322   1          for ( i = start; i < limit; i++ )
+ 323   1          {
+ 324   2              status = GetInputRegisterValue(i);
+ 325   2              
+ 326   2              TwoByteToAscii(status);
+ 327   2              ascii_frame[data_count++] = ascii[3];
+ 328   2              ascii_frame[data_count++] = ascii[2];
+ 329   2              ascii_frame[data_count++] = ascii[1];
+ 330   2              ascii_frame[data_count++] = ascii[0];
+ 331   2            
+ 332   2              new_data_count+=2;     // add two bytes to response frame
+ 333   2          }
+ 334   1          
+ 335   1          ByteToAscii(new_data_count);
+ 336   1          ascii_frame[5] = ascii[0];
+ 337   1          ascii_frame[6] = ascii[1];
+ 338   1      
+ 339   1          gen_lrc();
+ 340   1          
+ 341   1          tx_assci_frame();
+ 342   1          return;
+ 343   1      }
+ 344          
+ 345          void ResponseForceSingleCoil_05(void) // 0x05, OK!!!!
+ 346          {
+ 347   1          uint16_t coilID = 0;
+ 348   1          uint16_t value =  0;    
+ 349   1          uint16_t i = 0;            
+ 350   1      
+ 351   1          for ( i = 0; i < 4; i++ )
+ 352   1          {
+ 353   2              ascii[i] = ascii_frame[i + 5];
+ 354   2          }   
+ 355   1          coilID = AsciiToTwoByte();     //coil index 
+ 356   1          for ( i = 0; i < 4; i++ )
+ 357   1          {
+ 358   2              ascii[i] = ascii_frame[i + 9]; 
+ 359   2          }    
+ 360   1          value = AsciiToTwoByte();       //coil value       
+ 361   1          if ( value == 0 || value == 65280 )     // 0 or 1, 0000h or FF00h
+ 362   1          {    
+ 363   2              SetCoilValue(coilID, value > 0);
+ 364   2          }
+ 365   1          else
+ 366   1          {
+ 367   2              clear_frame();
+ 368   2              return ;    
+ 369   2          }
+ 370   1          
+ 371   1          gen_lrc();
+ 372   1      
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 36  
+
+ 373   1          tx_assci_frame();
+ 374   1          return;
+ 375   1      }
+ 376          
+ 377          void ResponsePresetSingleRegister_06(void)  //0x06, OK!!!!
+ 378          {
+ 379   1          uint16_t registerID = 0;
+ 380   1          uint16_t value =  0;    
+ 381   1          uint16_t i = 0;           
+ 382   1      
+ 383   1          for ( i = 0; i < 4; i++ )
+ 384   1          {
+ 385   2              ascii[i] = ascii_frame[i + 5];
+ 386   2          }   
+ 387   1          registerID = AsciiToTwoByte();     //register index 
+ 388   1          for ( i = 0; i < 4; i++ )
+ 389   1          {
+ 390   2              ascii[i] = ascii_frame[i + 9];
+ 391   2          }    
+ 392   1          value = AsciiToTwoByte();          //register value          
+ 393   1          SetHoldingRegisterValue(registerID, value);
+ 394   1          
+ 395   1          gen_lrc();
+ 396   1      
+ 397   1          tx_assci_frame();
+ 398   1          return;
+ 399   1      }
+ 400          
+ 401          void ResponseForceMultipleCoils_15(void) // 0x0F, OK
+ 402          {
+ 403   1          uint16_t start = 0, cant = 0;
+ 404   1          uint16_t i = 0, limit = 0;
+ 405   1          uint8_t coils = 0, k = 0, new_data_count = 0, tempAdr = 0;
+ 406   1          uint8_t index = 0, offset = 0;       
+ 407   1          uint16_t idata parameters[20];
+ 408   1          uint8_t idata byte_count;    
+ 409   1      
+ 410   1          for ( i = 0; i < 4; i++ )
+ 411   1          {
+ 412   2              ascii[i] = ascii_frame[i + 5];
+ 413   2          }   
+ 414   1          start = AsciiToTwoByte();    
+ 415   1          for ( i = 0; i < 4; i++ )
+ 416   1          {
+ 417   2              ascii[i] = ascii_frame[i + 9];
+ 418   2          }    
+ 419   1          cant = AsciiToTwoByte();        
+ 420   1          limit = start + cant;
+ 421   1          
+ 422   1          new_data_count = AsciiToByte(ascii_frame[13], ascii_frame[14] );
+ 423   1          data_count = 15;
+ 424   1          
+ 425   1          /* read new coils values */
+ 426   1          byte_count = 0;    
+ 427   1          for ( i = 0; i < new_data_count; i++ )
+ 428   1          {
+ 429   2              coils = AsciiToByte(ascii_frame[data_count], ascii_frame[data_count+1]);
+ 430   2              data_count += 2;        
+ 431   2              parameters[byte_count++] = coils;      
+ 432   2          }
+ 433   1      
+ 434   1          /* force coils status */
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 37  
+
+ 435   1          for ( i = start; i < limit; i++ )
+ 436   1          {        
+ 437   2              tempAdr = i - start;        
+ 438   2              index = tempAdr / 8;
+ 439   2              offset = tempAdr % 8;        
+ 440   2              k = ( parameters[index] & ( 1 << offset ) );    
+ 441   2              SetCoilValue(i, k > 0);    // force status of coil i with k                    
+ 442   2          }
+ 443   1          /* response frame */
+ 444   1          data_count = 13;
+ 445   1      
+ 446   1          gen_lrc();
+ 447   1          
+ 448   1          tx_assci_frame();
+ 449   1          return;
+ 450   1      }
+ 451          
+ 452          void ResponsePresetMultipleRegisters_16(void)   // 0x10, OK!!!
+ 453          {
+ 454   1          uint16_t start = 0, cant = 0;
+ 455   1          uint16_t i = 0, limit = 0, reg_value = 0;
+ 456   1          signed char j = 0;
+ 457   1          uint8_t idata byte_count;          
+ 458   1      
+ 459   1          for ( i = 0; i < 4; i++ )
+ 460   1          {
+ 461   2              ascii[i] = ascii_frame[i + 5];
+ 462   2          }   
+ 463   1          start = AsciiToTwoByte();        
+ 464   1          for ( i = 0; i < 4; i++ )
+ 465   1          {
+ 466   2              ascii[i] = ascii_frame[i + 9];
+ 467   2          }    
+ 468   1          cant = AsciiToTwoByte();        
+ 469   1          limit = start + cant;
+ 470   1              
+ 471   1          byte_count = AsciiToByte(ascii_frame[13], ascii_frame[14] );
+ 472   1          data_count = 15;
+ 473   1            
+ 474   1          /* read and set new holding registers values */
+ 475   1          byte_count /= 2;
+ 476   1          for ( i = 0; i < byte_count; i++ )
+ 477   1          {       
+ 478   2              for ( j = 0; j < 4; j++ )
+ 479   2              {     
+ 480   3                  ascii[j] = ascii_frame[data_count++];        
+ 481   3              }        
+ 482   2              reg_value = AsciiToTwoByte();        
+ 483   2              holding_registers_array[start++] = reg_value;           
+ 484   2          }
+ 485   1      
+ 486   1          data_count = 13;
+ 487   1      
+ 488   1          gen_lrc();
+ 489   1          
+ 490   1          tx_assci_frame();
+ 491   1          return;
+ 492   1      }
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 38  
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+             ; FUNCTION execute_modbus_command (BEGIN)
+                                           ; SOURCE LINE # 20
+                                           ; SOURCE LINE # 21
+                                           ; SOURCE LINE # 22
+0000 E4                CLR     A
+0001 F500        R     MOV     is_me,A
+0003 F500        R     MOV     fun,A
+0005 F500        R     MOV     lrc,A
+                                           ; SOURCE LINE # 24
+0007 7800        R     MOV     R0,#LOW data_count
+0009 E6                MOV     A,@R0
+000A C3                CLR     C
+000B 9409              SUBB    A,#09H
+000D 7480              MOV     A,#080H
+000F 9480              SUBB    A,#080H
+0011 5002              JNC     ?C0001
+                                           ; SOURCE LINE # 25
+                                           ; SOURCE LINE # 26
+0013 8044              SJMP    ?C0150
+                                           ; SOURCE LINE # 28
+0015         ?C0001:
+                                           ; SOURCE LINE # 29
+0015 7800        R     MOV     R0,#LOW data_count
+0017 16                DEC     @R0
+0018 16                DEC     @R0
+                                           ; SOURCE LINE # 30
+0019 E6                MOV     A,@R0
+001A FE                MOV     R6,A
+001B 2400        R     ADD     A,#LOW ascii_frame+0FFFEH
+001D F8                MOV     R0,A
+001E E6                MOV     A,@R0
+001F FF                MOV     R7,A
+0020 7400        R     MOV     A,#LOW ascii_frame+0FFFFH
+0022 2E                ADD     A,R6
+0023 F8                MOV     R0,A
+0024 E6                MOV     A,@R0
+0025 FD                MOV     R5,A
+0026 120000      E     LCALL   _AsciiToByte
+0029 8F00        R     MOV     lrc,R7
+                                           ; SOURCE LINE # 31
+002B 7800        R     MOV     R0,#LOW data_count
+002D 16                DEC     @R0
+002E 16                DEC     @R0
+                                           ; SOURCE LINE # 32
+002F 120000      R     LCALL   lrc_calc
+0032 8F00        R     MOV     fun,R7
+                                           ; SOURCE LINE # 33
+0034 E500        R     MOV     A,fun
+0036 6500        R     XRL     A,lrc
+0038 6002              JZ      ?C0003
+                                           ; SOURCE LINE # 34
+                                           ; SOURCE LINE # 35
+003A         ?C0149:
+003A 801D              SJMP    ?C0150
+                                           ; SOURCE LINE # 37
+003C         ?C0003:
+                                           ; SOURCE LINE # 40
+003C 7800        R     MOV     R0,#LOW ascii_frame+01H
+003E E6                MOV     A,@R0
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 39  
+
+003F FF                MOV     R7,A
+0040 08                INC     R0
+0041 E6                MOV     A,@R0
+0042 FD                MOV     R5,A
+0043 120000      E     LCALL   _AsciiToByte
+0046 8F00        R     MOV     is_me,R7
+                                           ; SOURCE LINE # 41
+0048 7E00              MOV     R6,#00H
+004A EF                MOV     A,R7
+004B 7004              JNZ     ?C0004
+                                           ; SOURCE LINE # 42
+                                           ; SOURCE LINE # 43
+004D D200        R     SETB    broadcast
+                                           ; SOURCE LINE # 44
+004F 800B              SJMP    ?C0005
+0051         ?C0004:
+                                           ; SOURCE LINE # 46
+                                           ; SOURCE LINE # 47
+0051 C200        R     CLR     broadcast
+                                           ; SOURCE LINE # 48
+0053 EF                MOV     A,R7
+0054 6405              XRL     A,#05H
+0056 4E                ORL     A,R6
+0057 6003              JZ      ?C0005
+                                           ; SOURCE LINE # 49
+                                           ; SOURCE LINE # 50
+0059         ?C0150:
+0059 020000      R     LJMP    clear_frame
+                                           ; SOURCE LINE # 52
+                                           ; SOURCE LINE # 53
+005C         ?C0005:
+                                           ; SOURCE LINE # 55
+005C 7800        R     MOV     R0,#LOW ascii_frame+03H
+005E E6                MOV     A,@R0
+005F FF                MOV     R7,A
+0060 08                INC     R0
+0061 E6                MOV     A,@R0
+0062 FD                MOV     R5,A
+0063 120000      E     LCALL   _AsciiToByte
+0066 8F00        R     MOV     fun,R7
+                                           ; SOURCE LINE # 56
+0068 E500        R     MOV     A,fun
+006A 24FE              ADD     A,#0FEH
+006C 601A              JZ      ?C0009
+006E 14                DEC     A
+006F 601A              JZ      ?C0010
+0071 14                DEC     A
+0072 601A              JZ      ?C0011
+0074 14                DEC     A
+0075 601A              JZ      ?C0012
+0077 14                DEC     A
+0078 601A              JZ      ?C0013
+007A 24F7              ADD     A,#0F7H
+007C 6019              JZ      ?C0014
+007E 14                DEC     A
+007F 6019              JZ      ?C0015
+0081 240F              ADD     A,#0FH
+0083 7018              JNZ     ?C0002
+                                           ; SOURCE LINE # 57
+                                           ; SOURCE LINE # 58
+0085         ?C0008:
+                                           ; SOURCE LINE # 59
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 40  
+
+                                           ; SOURCE LINE # 60
+0085 020000      R     LJMP    ResponseReadCoilsStatus_01
+                                           ; SOURCE LINE # 61
+                                           ; SOURCE LINE # 62
+                                           ; SOURCE LINE # 63
+0088         ?C0009:
+                                           ; SOURCE LINE # 64
+                                           ; SOURCE LINE # 65
+0088 020000      R     LJMP    ResponseReadInputStatus_02
+                                           ; SOURCE LINE # 66
+                                           ; SOURCE LINE # 67
+                                           ; SOURCE LINE # 68
+008B         ?C0010:
+                                           ; SOURCE LINE # 69
+                                           ; SOURCE LINE # 70
+008B 020000      R     LJMP    ResponseReadHoldingRegisters_03
+                                           ; SOURCE LINE # 71
+                                           ; SOURCE LINE # 72
+                                           ; SOURCE LINE # 73
+008E         ?C0011:
+                                           ; SOURCE LINE # 74
+                                           ; SOURCE LINE # 75
+008E 020000      R     LJMP    ResponseReadInputRegisters_04
+                                           ; SOURCE LINE # 76
+                                           ; SOURCE LINE # 77
+                                           ; SOURCE LINE # 78
+0091         ?C0012:
+                                           ; SOURCE LINE # 79
+                                           ; SOURCE LINE # 80
+0091 020000      R     LJMP    ResponseForceSingleCoil_05
+                                           ; SOURCE LINE # 81
+                                           ; SOURCE LINE # 82
+                                           ; SOURCE LINE # 83
+0094         ?C0013:
+                                           ; SOURCE LINE # 84
+                                           ; SOURCE LINE # 85
+0094 020000      R     LJMP    ResponsePresetSingleRegister_06
+                                           ; SOURCE LINE # 86
+                                           ; SOURCE LINE # 87
+                                           ; SOURCE LINE # 88
+0097         ?C0014:
+                                           ; SOURCE LINE # 89
+                                           ; SOURCE LINE # 90
+0097 020000      R     LJMP    ResponseForceMultipleCoils_15
+                                           ; SOURCE LINE # 91
+                                           ; SOURCE LINE # 92
+                                           ; SOURCE LINE # 93
+009A         ?C0015:
+                                           ; SOURCE LINE # 94
+                                           ; SOURCE LINE # 95
+009A 120000      R     LCALL   ResponsePresetMultipleRegisters_16
+                                           ; SOURCE LINE # 96
+                                           ; SOURCE LINE # 97
+                                           ; SOURCE LINE # 98
+                                           ; SOURCE LINE # 99
+                                           ; SOURCE LINE # 100
+                                           ; SOURCE LINE # 101
+                                           ; SOURCE LINE # 102
+                                           ; SOURCE LINE # 103
+009D         ?C0002:
+009D 22                RET     
+             ; FUNCTION execute_modbus_command (END)
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 41  
+
+
+             ; FUNCTION L?0151 (BEGIN)
+0000         L?0152:
+0000 7800        R     MOV     R0,#LOW ascii_frame+05H
+0002 A600        E     MOV     @R0,ascii
+0004 08                INC     R0
+0005 A600        E     MOV     @R0,ascii+01H
+             ; FUNCTION gen_lrc (BEGIN)
+                                           ; SOURCE LINE # 105
+                                           ; SOURCE LINE # 106
+                                           ; SOURCE LINE # 107
+0007 120000      R     LCALL   lrc_calc
+000A 120000      E     LCALL   _ByteToAscii
+                                           ; SOURCE LINE # 108
+000D 7800        R     MOV     R0,#LOW data_count
+000F E6                MOV     A,@R0
+0010 06                INC     @R0
+0011 2400        R     ADD     A,#LOW ascii_frame
+0013 F8                MOV     R0,A
+0014 A600        E     MOV     @R0,ascii
+                                           ; SOURCE LINE # 109
+0016 7800        R     MOV     R0,#LOW data_count
+0018 E6                MOV     A,@R0
+0019 06                INC     @R0
+001A 2400        R     ADD     A,#LOW ascii_frame
+001C F8                MOV     R0,A
+001D A600        E     MOV     @R0,ascii+01H
+                                           ; SOURCE LINE # 111
+001F 7800        R     MOV     R0,#LOW data_count
+0021 E6                MOV     A,@R0
+0022 06                INC     @R0
+0023 2400        R     ADD     A,#LOW ascii_frame
+0025 F8                MOV     R0,A
+0026 760D              MOV     @R0,#0DH
+                                           ; SOURCE LINE # 112
+0028 7800        R     MOV     R0,#LOW data_count
+002A E6                MOV     A,@R0
+002B 06                INC     @R0
+002C 2400        R     ADD     A,#LOW ascii_frame
+002E F8                MOV     R0,A
+002F 760A              MOV     @R0,#0AH
+                                           ; SOURCE LINE # 113
+0031 22                RET     
+             ; FUNCTION gen_lrc (END)
+
+             ; FUNCTION clear_frame (BEGIN)
+                                           ; SOURCE LINE # 115
+                                           ; SOURCE LINE # 116
+                                           ; SOURCE LINE # 117
+;---- Variable 'i' assigned to Register 'R7' ----
+0000 E4                CLR     A
+0001 FF                MOV     R7,A
+                                           ; SOURCE LINE # 119
+0002 7800        R     MOV     R0,#LOW data_count
+0004 F6                MOV     @R0,A
+                                           ; SOURCE LINE # 120
+0005 08                INC     R0
+0006 F6                MOV     @R0,A
+                                           ; SOURCE LINE # 121
+0007         ?C0018:
+0007 EF                MOV     A,R7
+0008 C3                CLR     C
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 42  
+
+0009 943C              SUBB    A,#03CH
+000B 7480              MOV     A,#080H
+000D 9480              SUBB    A,#080H
+000F 5009              JNC     ?C0021
+                                           ; SOURCE LINE # 122
+                                           ; SOURCE LINE # 123
+0011 7400        R     MOV     A,#LOW ascii_frame
+0013 2F                ADD     A,R7
+0014 F8                MOV     R0,A
+0015 E4                CLR     A
+0016 F6                MOV     @R0,A
+                                           ; SOURCE LINE # 124
+0017 0F                INC     R7
+0018 80ED              SJMP    ?C0018
+                                           ; SOURCE LINE # 125
+001A         ?C0021:
+001A 22                RET     
+             ; FUNCTION clear_frame (END)
+
+             ; FUNCTION tx_assci_frame (BEGIN)
+                                           ; SOURCE LINE # 127
+                                           ; SOURCE LINE # 128
+                                           ; SOURCE LINE # 129
+0000 300007      R     JNB     broadcast,?C0022
+                                           ; SOURCE LINE # 130
+                                           ; SOURCE LINE # 131
+0003 C2B2              CLR     RS485En
+                                           ; SOURCE LINE # 132
+0005 C200        R     CLR     broadcast
+                                           ; SOURCE LINE # 133
+0007 020000      R     LJMP    clear_frame
+                                           ; SOURCE LINE # 135
+000A         ?C0022:
+                                           ; SOURCE LINE # 137
+000A D2B2              SETB    RS485En
+                                           ; SOURCE LINE # 138
+000C 7800        R     MOV     R0,#LOW send_count
+000E 7601              MOV     @R0,#01H
+                                           ; SOURCE LINE # 139
+0010 C299              CLR     TI
+                                           ; SOURCE LINE # 140
+0012 C29B              CLR     TB8
+                                           ; SOURCE LINE # 141
+0014 08                INC     R0
+0015 E6                MOV     A,@R0
+0016 F599              MOV     SBUF,A
+                                           ; SOURCE LINE # 142
+0018         ?C0023:
+0018 22                RET     
+             ; FUNCTION tx_assci_frame (END)
+
+             ; FUNCTION lrc_calc (BEGIN)
+                                           ; SOURCE LINE # 144
+                                           ; SOURCE LINE # 145
+                                           ; SOURCE LINE # 146
+0000 E4                CLR     A
+0001 F500        R     MOV     result,A
+0003 F500        R     MOV     i,A
+                                           ; SOURCE LINE # 148
+0005 750001      R     MOV     i,#01H
+0008         ?C0024:
+0008 E500        R     MOV     A,i
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 43  
+
+000A C3                CLR     C
+000B 7800        R     MOV     R0,#LOW data_count
+000D 96                SUBB    A,@R0
+000E 501C              JNC     ?C0025
+                                           ; SOURCE LINE # 149
+                                           ; SOURCE LINE # 150
+0010 7400        R     MOV     A,#LOW ascii_frame
+0012 2500        R     ADD     A,i
+0014 F8                MOV     R0,A
+0015 E6                MOV     A,@R0
+0016 FF                MOV     R7,A
+0017 7400        R     MOV     A,#LOW ascii_frame+01H
+0019 2500        R     ADD     A,i
+001B F8                MOV     R0,A
+001C E6                MOV     A,@R0
+001D FD                MOV     R5,A
+001E 120000      E     LCALL   _AsciiToByte
+0021 EF                MOV     A,R7
+0022 2500        R     ADD     A,result
+0024 F500        R     MOV     result,A
+                                           ; SOURCE LINE # 151
+0026 0500        R     INC     i
+0028 0500        R     INC     i
+002A 80DC              SJMP    ?C0024
+002C         ?C0025:
+                                           ; SOURCE LINE # 152
+002C 6300FF      R     XRL     result,#0FFH
+                                           ; SOURCE LINE # 153
+002F E500        R     MOV     A,result
+0031 04                INC     A
+0032 FF                MOV     R7,A
+                                           ; SOURCE LINE # 154
+0033 22                RET     
+             ; FUNCTION lrc_calc (END)
+
+             ; FUNCTION ResponseReadCoilsStatus_01 (BEGIN)
+                                           ; SOURCE LINE # 157
+                                           ; SOURCE LINE # 158
+                                           ; SOURCE LINE # 159
+0000 E4                CLR     A
+0001 F500        R     MOV     start,A
+0003 F500        R     MOV     start+01H,A
+0005 F500        R     MOV     cant,A
+0007 F500        R     MOV     cant+01H,A
+                                           ; SOURCE LINE # 160
+0009 F500        R     MOV     i,A
+000B F500        R     MOV     i+01H,A
+000D F500        R     MOV     limit,A
+000F F500        R     MOV     limit+01H,A
+                                           ; SOURCE LINE # 161
+0011 F500        R     MOV     coils,A
+0013 F500        R     MOV     k,A
+0015 F500        R     MOV     new_data_count,A
+                                           ; SOURCE LINE # 163
+0017 7800        R     MOV     R0,#LOW data_count
+0019 7607              MOV     @R0,#07H
+                                           ; SOURCE LINE # 164
+001B F500        R     MOV     i,A
+001D F500        R     MOV     i+01H,A
+001F         ?C0028:
+                                           ; SOURCE LINE # 165
+                                           ; SOURCE LINE # 166
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 44  
+
+001F AF00        R     MOV     R7,i+01H
+0021 7400        R     MOV     A,#LOW ascii_frame+05H
+0023 2F                ADD     A,R7
+0024 F8                MOV     R0,A
+0025 E6                MOV     A,@R0
+0026 FE                MOV     R6,A
+0027 7400        E     MOV     A,#LOW ascii
+0029 2F                ADD     A,R7
+002A F8                MOV     R0,A
+002B A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 167
+002D 0500        R     INC     i+01H
+002F E500        R     MOV     A,i+01H
+0031 7002              JNZ     ?C0121
+0033 0500        R     INC     i
+0035         ?C0121:
+0035 6404              XRL     A,#04H
+0037 4500        R     ORL     A,i
+0039 70E4              JNZ     ?C0028
+003B         ?C0029:
+                                           ; SOURCE LINE # 168
+003B 120000      E     LCALL   AsciiToTwoByte
+003E 8E00        R     MOV     start,R6
+0040 8F00        R     MOV     start+01H,R7
+                                           ; SOURCE LINE # 169
+0042 E4                CLR     A
+0043 F500        R     MOV     i,A
+0045 F500        R     MOV     i+01H,A
+0047         ?C0031:
+                                           ; SOURCE LINE # 170
+                                           ; SOURCE LINE # 171
+0047 AF00        R     MOV     R7,i+01H
+0049 7400        R     MOV     A,#LOW ascii_frame+09H
+004B 2F                ADD     A,R7
+004C F8                MOV     R0,A
+004D E6                MOV     A,@R0
+004E FE                MOV     R6,A
+004F 7400        E     MOV     A,#LOW ascii
+0051 2F                ADD     A,R7
+0052 F8                MOV     R0,A
+0053 A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 172
+0055 0500        R     INC     i+01H
+0057 E500        R     MOV     A,i+01H
+0059 7002              JNZ     ?C0122
+005B 0500        R     INC     i
+005D         ?C0122:
+005D 6404              XRL     A,#04H
+005F 4500        R     ORL     A,i
+0061 70E4              JNZ     ?C0031
+0063         ?C0032:
+                                           ; SOURCE LINE # 173
+0063 120000      E     LCALL   AsciiToTwoByte
+0066 8E00        R     MOV     cant,R6
+0068 8F00        R     MOV     cant+01H,R7
+                                           ; SOURCE LINE # 174
+006A E500        R     MOV     A,start+01H
+006C 2500        R     ADD     A,cant+01H
+006E F500        R     MOV     limit+01H,A
+0070 E500        R     MOV     A,start
+0072 3500        R     ADDC    A,cant
+0074 F500        R     MOV     limit,A
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 45  
+
+                                           ; SOURCE LINE # 177
+0076 850000      R     MOV     i,start
+0079 850000      R     MOV     i+01H,start+01H
+007C         ?C0034:
+007C C3                CLR     C
+007D E500        R     MOV     A,i+01H
+007F 9500        R     SUBB    A,limit+01H
+0081 E500        R     MOV     A,i
+0083 9500        R     SUBB    A,limit
+0085 5066              JNC     ?C0035
+                                           ; SOURCE LINE # 178
+                                           ; SOURCE LINE # 179
+0087 E4                CLR     A
+0088 F500        R     MOV     k,A
+                                           ; SOURCE LINE # 180
+008A F500        R     MOV     coils,A
+008C         ?C0037:
+                                           ; SOURCE LINE # 181
+008C C3                CLR     C
+008D E500        R     MOV     A,k
+008F 9408              SUBB    A,#08H
+0091 7480              MOV     A,#080H
+0093 9480              SUBB    A,#080H
+0095 5030              JNC     ?C0038
+0097 7E00              MOV     R6,#00H
+0099 E500        R     MOV     A,i+01H
+009B 2500        R     ADD     A,k
+009D FF                MOV     R7,A
+009E EE                MOV     A,R6
+009F 3500        R     ADDC    A,i
+00A1 FE                MOV     R6,A
+00A2 C3                CLR     C
+00A3 EF                MOV     A,R7
+00A4 9500        R     SUBB    A,limit+01H
+00A6 EE                MOV     A,R6
+00A7 9500        R     SUBB    A,limit
+00A9 501C              JNC     ?C0038
+                                           ; SOURCE LINE # 182
+                                           ; SOURCE LINE # 183
+00AB 120000      E     LCALL   _GetCoilValue
+00AE 8F00        R     MOV     val,R7
+                                           ; SOURCE LINE # 184
+00B0 EF                MOV     A,R7
+00B1 6401              XRL     A,#01H
+00B3 700E              JNZ     ?C0039
+                                           ; SOURCE LINE # 185
+                                           ; SOURCE LINE # 186
+00B5 AF00        R     MOV     R7,k
+00B7 A807              MOV     R0,AR7
+00B9 04                INC     A
+00BA 08                INC     R0
+00BB 8002              SJMP    ?C0124
+00BD         ?C0123:
+00BD C3                CLR     C
+00BE 33                RLC     A
+00BF         ?C0124:
+00BF D8FC              DJNZ    R0,?C0123
+00C1 4200        R     ORL     coils,A
+                                           ; SOURCE LINE # 187
+00C3         ?C0039:
+                                           ; SOURCE LINE # 188
+00C3 0500        R     INC     k
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 46  
+
+                                           ; SOURCE LINE # 189
+00C5 80C5              SJMP    ?C0037
+00C7         ?C0038:
+                                           ; SOURCE LINE # 190
+00C7 AF00        R     MOV     R7,coils
+00C9 120000      E     LCALL   _ByteToAscii
+                                           ; SOURCE LINE # 191
+00CC 7800        R     MOV     R0,#LOW data_count
+00CE E6                MOV     A,@R0
+00CF 06                INC     @R0
+00D0 2400        R     ADD     A,#LOW ascii_frame
+00D2 F8                MOV     R0,A
+00D3 A600        E     MOV     @R0,ascii
+                                           ; SOURCE LINE # 192
+00D5 7800        R     MOV     R0,#LOW data_count
+00D7 E6                MOV     A,@R0
+00D8 06                INC     @R0
+00D9 2400        R     ADD     A,#LOW ascii_frame
+00DB F8                MOV     R0,A
+00DC A600        E     MOV     @R0,ascii+01H
+                                           ; SOURCE LINE # 193
+00DE 0500        R     INC     new_data_count
+                                           ; SOURCE LINE # 194
+00E0 7408              MOV     A,#08H
+00E2 2500        R     ADD     A,i+01H
+00E4 F500        R     MOV     i+01H,A
+00E6 E4                CLR     A
+00E7 3500        R     ADDC    A,i
+00E9 F500        R     MOV     i,A
+00EB 808F              SJMP    ?C0034
+00ED         ?C0035:
+                                           ; SOURCE LINE # 196
+00ED AF00        R     MOV     R7,new_data_count
+00EF 120000      E     LCALL   _ByteToAscii
+                                           ; SOURCE LINE # 197
+                                           ; SOURCE LINE # 198
+                                           ; SOURCE LINE # 200
+00F2 120000      R     LCALL   L?0151
+                                           ; SOURCE LINE # 202
+00F5 020000      R     LJMP    tx_assci_frame
+             ; FUNCTION ResponseReadCoilsStatus_01 (END)
+
+             ; FUNCTION ResponseReadInputStatus_02 (BEGIN)
+                                           ; SOURCE LINE # 206
+                                           ; SOURCE LINE # 207
+                                           ; SOURCE LINE # 208
+0000 E4                CLR     A
+0001 F500        R     MOV     start,A
+0003 F500        R     MOV     start+01H,A
+0005 F500        R     MOV     cant,A
+0007 F500        R     MOV     cant+01H,A
+                                           ; SOURCE LINE # 209
+0009 F500        R     MOV     i,A
+000B F500        R     MOV     i+01H,A
+000D F500        R     MOV     limit,A
+000F F500        R     MOV     limit+01H,A
+                                           ; SOURCE LINE # 210
+0011 F500        R     MOV     inputs,A
+0013 F500        R     MOV     k,A
+0015 F500        R     MOV     new_data_count,A
+                                           ; SOURCE LINE # 212
+0017 7800        R     MOV     R0,#LOW data_count
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 47  
+
+0019 7607              MOV     @R0,#07H
+                                           ; SOURCE LINE # 213
+001B F500        R     MOV     i,A
+001D F500        R     MOV     i+01H,A
+001F         ?C0041:
+                                           ; SOURCE LINE # 214
+                                           ; SOURCE LINE # 215
+001F AF00        R     MOV     R7,i+01H
+0021 7400        R     MOV     A,#LOW ascii_frame+05H
+0023 2F                ADD     A,R7
+0024 F8                MOV     R0,A
+0025 E6                MOV     A,@R0
+0026 FE                MOV     R6,A
+0027 7400        E     MOV     A,#LOW ascii
+0029 2F                ADD     A,R7
+002A F8                MOV     R0,A
+002B A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 216
+002D 0500        R     INC     i+01H
+002F E500        R     MOV     A,i+01H
+0031 7002              JNZ     ?C0125
+0033 0500        R     INC     i
+0035         ?C0125:
+0035 6404              XRL     A,#04H
+0037 4500        R     ORL     A,i
+0039 70E4              JNZ     ?C0041
+003B         ?C0042:
+                                           ; SOURCE LINE # 217
+003B 120000      E     LCALL   AsciiToTwoByte
+003E 8E00        R     MOV     start,R6
+0040 8F00        R     MOV     start+01H,R7
+                                           ; SOURCE LINE # 218
+0042 E4                CLR     A
+0043 F500        R     MOV     i,A
+0045 F500        R     MOV     i+01H,A
+0047         ?C0044:
+                                           ; SOURCE LINE # 219
+                                           ; SOURCE LINE # 220
+0047 AF00        R     MOV     R7,i+01H
+0049 7400        R     MOV     A,#LOW ascii_frame+09H
+004B 2F                ADD     A,R7
+004C F8                MOV     R0,A
+004D E6                MOV     A,@R0
+004E FE                MOV     R6,A
+004F 7400        E     MOV     A,#LOW ascii
+0051 2F                ADD     A,R7
+0052 F8                MOV     R0,A
+0053 A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 221
+0055 0500        R     INC     i+01H
+0057 E500        R     MOV     A,i+01H
+0059 7002              JNZ     ?C0126
+005B 0500        R     INC     i
+005D         ?C0126:
+005D 6404              XRL     A,#04H
+005F 4500        R     ORL     A,i
+0061 70E4              JNZ     ?C0044
+0063         ?C0045:
+                                           ; SOURCE LINE # 223
+0063 120000      E     LCALL   AsciiToTwoByte
+0066 8E00        R     MOV     cant,R6
+0068 8F00        R     MOV     cant+01H,R7
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 48  
+
+                                           ; SOURCE LINE # 224
+006A E500        R     MOV     A,start+01H
+006C 2500        R     ADD     A,cant+01H
+006E F500        R     MOV     limit+01H,A
+0070 E500        R     MOV     A,start
+0072 3500        R     ADDC    A,cant
+0074 F500        R     MOV     limit,A
+                                           ; SOURCE LINE # 227
+0076 850000      R     MOV     i,start
+0079 850000      R     MOV     i+01H,start+01H
+007C         ?C0047:
+007C C3                CLR     C
+007D E500        R     MOV     A,i+01H
+007F 9500        R     SUBB    A,limit+01H
+0081 E500        R     MOV     A,i
+0083 9500        R     SUBB    A,limit
+0085 5066              JNC     ?C0048
+                                           ; SOURCE LINE # 228
+                                           ; SOURCE LINE # 229
+0087 E4                CLR     A
+0088 F500        R     MOV     k,A
+                                           ; SOURCE LINE # 230
+008A F500        R     MOV     inputs,A
+008C         ?C0050:
+                                           ; SOURCE LINE # 231
+008C C3                CLR     C
+008D E500        R     MOV     A,k
+008F 9408              SUBB    A,#08H
+0091 7480              MOV     A,#080H
+0093 9480              SUBB    A,#080H
+0095 5030              JNC     ?C0051
+0097 7E00              MOV     R6,#00H
+0099 E500        R     MOV     A,i+01H
+009B 2500        R     ADD     A,k
+009D FF                MOV     R7,A
+009E EE                MOV     A,R6
+009F 3500        R     ADDC    A,i
+00A1 FE                MOV     R6,A
+00A2 C3                CLR     C
+00A3 EF                MOV     A,R7
+00A4 9500        R     SUBB    A,limit+01H
+00A6 EE                MOV     A,R6
+00A7 9500        R     SUBB    A,limit
+00A9 501C              JNC     ?C0051
+                                           ; SOURCE LINE # 232
+                                           ; SOURCE LINE # 233
+00AB 120000      E     LCALL   _GetInputValue
+00AE 8F00        R     MOV     val,R7
+                                           ; SOURCE LINE # 235
+00B0 EF                MOV     A,R7
+00B1 6401              XRL     A,#01H
+00B3 700E              JNZ     ?C0052
+                                           ; SOURCE LINE # 236
+                                           ; SOURCE LINE # 237
+00B5 AF00        R     MOV     R7,k
+00B7 A807              MOV     R0,AR7
+00B9 04                INC     A
+00BA 08                INC     R0
+00BB 8002              SJMP    ?C0128
+00BD         ?C0127:
+00BD C3                CLR     C
+00BE 33                RLC     A
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 49  
+
+00BF         ?C0128:
+00BF D8FC              DJNZ    R0,?C0127
+00C1 4200        R     ORL     inputs,A
+                                           ; SOURCE LINE # 238
+00C3         ?C0052:
+                                           ; SOURCE LINE # 239
+00C3 0500        R     INC     k
+                                           ; SOURCE LINE # 240
+00C5 80C5              SJMP    ?C0050
+00C7         ?C0051:
+                                           ; SOURCE LINE # 241
+00C7 AF00        R     MOV     R7,inputs
+00C9 120000      E     LCALL   _ByteToAscii
+                                           ; SOURCE LINE # 242
+00CC 7800        R     MOV     R0,#LOW data_count
+00CE E6                MOV     A,@R0
+00CF 06                INC     @R0
+00D0 2400        R     ADD     A,#LOW ascii_frame
+00D2 F8                MOV     R0,A
+00D3 A600        E     MOV     @R0,ascii
+                                           ; SOURCE LINE # 243
+00D5 7800        R     MOV     R0,#LOW data_count
+00D7 E6                MOV     A,@R0
+00D8 06                INC     @R0
+00D9 2400        R     ADD     A,#LOW ascii_frame
+00DB F8                MOV     R0,A
+00DC A600        E     MOV     @R0,ascii+01H
+                                           ; SOURCE LINE # 245
+00DE 0500        R     INC     new_data_count
+                                           ; SOURCE LINE # 246
+00E0 7408              MOV     A,#08H
+00E2 2500        R     ADD     A,i+01H
+00E4 F500        R     MOV     i+01H,A
+00E6 E4                CLR     A
+00E7 3500        R     ADDC    A,i
+00E9 F500        R     MOV     i,A
+00EB 808F              SJMP    ?C0047
+00ED         ?C0048:
+                                           ; SOURCE LINE # 248
+00ED AF00        R     MOV     R7,new_data_count
+00EF 120000      E     LCALL   _ByteToAscii
+                                           ; SOURCE LINE # 249
+                                           ; SOURCE LINE # 250
+                                           ; SOURCE LINE # 252
+00F2 120000      R     LCALL   L?0151
+                                           ; SOURCE LINE # 254
+00F5 020000      R     LJMP    tx_assci_frame
+             ; FUNCTION ResponseReadInputStatus_02 (END)
+
+             ; FUNCTION ResponseReadHoldingRegisters_03 (BEGIN)
+                                           ; SOURCE LINE # 258
+                                           ; SOURCE LINE # 259
+                                           ; SOURCE LINE # 260
+0000 E4                CLR     A
+0001 F500        R     MOV     start,A
+0003 F500        R     MOV     start+01H,A
+0005 F500        R     MOV     cant,A
+0007 F500        R     MOV     cant+01H,A
+                                           ; SOURCE LINE # 261
+0009 F500        R     MOV     i,A
+000B F500        R     MOV     i+01H,A
+000D F500        R     MOV     limit,A
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 50  
+
+000F F500        R     MOV     limit+01H,A
+0011 F500        R     MOV     status,A
+0013 F500        R     MOV     status+01H,A
+                                           ; SOURCE LINE # 262
+0015 F500        R     MOV     new_data_count,A
+                                           ; SOURCE LINE # 264
+0017 7800        R     MOV     R0,#LOW data_count
+0019 7607              MOV     @R0,#07H
+                                           ; SOURCE LINE # 265
+001B F500        R     MOV     i,A
+001D F500        R     MOV     i+01H,A
+001F         ?C0054:
+                                           ; SOURCE LINE # 266
+                                           ; SOURCE LINE # 267
+001F AF00        R     MOV     R7,i+01H
+0021 7400        R     MOV     A,#LOW ascii_frame+05H
+0023 2F                ADD     A,R7
+0024 F8                MOV     R0,A
+0025 E6                MOV     A,@R0
+0026 FE                MOV     R6,A
+0027 7400        E     MOV     A,#LOW ascii
+0029 2F                ADD     A,R7
+002A F8                MOV     R0,A
+002B A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 268
+002D 0500        R     INC     i+01H
+002F E500        R     MOV     A,i+01H
+0031 7002              JNZ     ?C0129
+0033 0500        R     INC     i
+0035         ?C0129:
+0035 6404              XRL     A,#04H
+0037 4500        R     ORL     A,i
+0039 70E4              JNZ     ?C0054
+003B         ?C0055:
+                                           ; SOURCE LINE # 269
+003B 120000      E     LCALL   AsciiToTwoByte
+003E 8E00        R     MOV     start,R6
+0040 8F00        R     MOV     start+01H,R7
+                                           ; SOURCE LINE # 270
+0042 E4                CLR     A
+0043 F500        R     MOV     i,A
+0045 F500        R     MOV     i+01H,A
+0047         ?C0057:
+                                           ; SOURCE LINE # 271
+                                           ; SOURCE LINE # 272
+0047 AF00        R     MOV     R7,i+01H
+0049 7400        R     MOV     A,#LOW ascii_frame+09H
+004B 2F                ADD     A,R7
+004C F8                MOV     R0,A
+004D E6                MOV     A,@R0
+004E FE                MOV     R6,A
+004F 7400        E     MOV     A,#LOW ascii
+0051 2F                ADD     A,R7
+0052 F8                MOV     R0,A
+0053 A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 273
+0055 0500        R     INC     i+01H
+0057 E500        R     MOV     A,i+01H
+0059 7002              JNZ     ?C0130
+005B 0500        R     INC     i
+005D         ?C0130:
+005D 6404              XRL     A,#04H
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 51  
+
+005F 4500        R     ORL     A,i
+0061 70E4              JNZ     ?C0057
+0063         ?C0058:
+                                           ; SOURCE LINE # 274
+0063 120000      E     LCALL   AsciiToTwoByte
+0066 8E00        R     MOV     cant,R6
+0068 8F00        R     MOV     cant+01H,R7
+                                           ; SOURCE LINE # 275
+006A E500        R     MOV     A,start+01H
+006C 2500        R     ADD     A,cant+01H
+006E F500        R     MOV     limit+01H,A
+0070 E500        R     MOV     A,start
+0072 3500        R     ADDC    A,cant
+0074 F500        R     MOV     limit,A
+                                           ; SOURCE LINE # 278
+0076 850000      R     MOV     i,start
+0079 850000      R     MOV     i+01H,start+01H
+007C         ?C0060:
+007C C3                CLR     C
+007D E500        R     MOV     A,i+01H
+007F 9500        R     SUBB    A,limit+01H
+0081 E500        R     MOV     A,i
+0083 9500        R     SUBB    A,limit
+0085 5040              JNC     ?C0061
+                                           ; SOURCE LINE # 279
+                                           ; SOURCE LINE # 280
+0087 AF00        R     MOV     R7,i+01H
+0089 AE00        R     MOV     R6,i
+008B 120000      E     LCALL   _GetHoldingRegisterValue
+008E 8E00        R     MOV     status,R6
+0090 8F00        R     MOV     status+01H,R7
+                                           ; SOURCE LINE # 281
+0092 120000      E     LCALL   _TwoByteToAscii
+                                           ; SOURCE LINE # 283
+0095 7800        R     MOV     R0,#LOW data_count
+0097 E6                MOV     A,@R0
+0098 06                INC     @R0
+0099 2400        R     ADD     A,#LOW ascii_frame
+009B F8                MOV     R0,A
+009C A600        E     MOV     @R0,ascii+03H
+                                           ; SOURCE LINE # 284
+009E 7800        R     MOV     R0,#LOW data_count
+00A0 E6                MOV     A,@R0
+00A1 06                INC     @R0
+00A2 2400        R     ADD     A,#LOW ascii_frame
+00A4 F8                MOV     R0,A
+00A5 A600        E     MOV     @R0,ascii+02H
+                                           ; SOURCE LINE # 285
+00A7 7800        R     MOV     R0,#LOW data_count
+00A9 E6                MOV     A,@R0
+00AA 06                INC     @R0
+00AB 2400        R     ADD     A,#LOW ascii_frame
+00AD F8                MOV     R0,A
+00AE A600        E     MOV     @R0,ascii+01H
+                                           ; SOURCE LINE # 286
+00B0 7800        R     MOV     R0,#LOW data_count
+00B2 E6                MOV     A,@R0
+00B3 06                INC     @R0
+00B4 2400        R     ADD     A,#LOW ascii_frame
+00B6 F8                MOV     R0,A
+00B7 A600        E     MOV     @R0,ascii
+                                           ; SOURCE LINE # 288
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 52  
+
+00B9 0500        R     INC     new_data_count
+00BB 0500        R     INC     new_data_count
+                                           ; SOURCE LINE # 289
+00BD 0500        R     INC     i+01H
+00BF E500        R     MOV     A,i+01H
+00C1 70B9              JNZ     ?C0060
+00C3 0500        R     INC     i
+00C5         ?C0131:
+00C5 80B5              SJMP    ?C0060
+00C7         ?C0061:
+                                           ; SOURCE LINE # 291
+00C7 AF00        R     MOV     R7,new_data_count
+00C9 120000      E     LCALL   _ByteToAscii
+                                           ; SOURCE LINE # 292
+                                           ; SOURCE LINE # 293
+                                           ; SOURCE LINE # 295
+00CC 120000      R     LCALL   L?0152
+                                           ; SOURCE LINE # 297
+00CF 020000      R     LJMP    tx_assci_frame
+             ; FUNCTION ResponseReadHoldingRegisters_03 (END)
+
+             ; FUNCTION ResponseReadInputRegisters_04 (BEGIN)
+                                           ; SOURCE LINE # 301
+                                           ; SOURCE LINE # 302
+                                           ; SOURCE LINE # 303
+0000 E4                CLR     A
+0001 F500        R     MOV     start,A
+0003 F500        R     MOV     start+01H,A
+0005 F500        R     MOV     cant,A
+0007 F500        R     MOV     cant+01H,A
+                                           ; SOURCE LINE # 304
+0009 F500        R     MOV     i,A
+000B F500        R     MOV     i+01H,A
+000D F500        R     MOV     limit,A
+000F F500        R     MOV     limit+01H,A
+0011 F500        R     MOV     status,A
+0013 F500        R     MOV     status+01H,A
+                                           ; SOURCE LINE # 305
+0015 F500        R     MOV     new_data_count,A
+                                           ; SOURCE LINE # 307
+0017 7800        R     MOV     R0,#LOW data_count
+0019 7607              MOV     @R0,#07H
+                                           ; SOURCE LINE # 308
+001B F500        R     MOV     i,A
+001D F500        R     MOV     i+01H,A
+001F         ?C0064:
+                                           ; SOURCE LINE # 309
+                                           ; SOURCE LINE # 310
+001F AF00        R     MOV     R7,i+01H
+0021 7400        R     MOV     A,#LOW ascii_frame+05H
+0023 2F                ADD     A,R7
+0024 F8                MOV     R0,A
+0025 E6                MOV     A,@R0
+0026 FE                MOV     R6,A
+0027 7400        E     MOV     A,#LOW ascii
+0029 2F                ADD     A,R7
+002A F8                MOV     R0,A
+002B A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 311
+002D 0500        R     INC     i+01H
+002F E500        R     MOV     A,i+01H
+0031 7002              JNZ     ?C0132
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 53  
+
+0033 0500        R     INC     i
+0035         ?C0132:
+0035 6404              XRL     A,#04H
+0037 4500        R     ORL     A,i
+0039 70E4              JNZ     ?C0064
+003B         ?C0065:
+                                           ; SOURCE LINE # 312
+003B 120000      E     LCALL   AsciiToTwoByte
+003E 8E00        R     MOV     start,R6
+0040 8F00        R     MOV     start+01H,R7
+                                           ; SOURCE LINE # 313
+0042 E4                CLR     A
+0043 F500        R     MOV     i,A
+0045 F500        R     MOV     i+01H,A
+0047         ?C0067:
+                                           ; SOURCE LINE # 314
+                                           ; SOURCE LINE # 315
+0047 AF00        R     MOV     R7,i+01H
+0049 7400        R     MOV     A,#LOW ascii_frame+09H
+004B 2F                ADD     A,R7
+004C F8                MOV     R0,A
+004D E6                MOV     A,@R0
+004E FE                MOV     R6,A
+004F 7400        E     MOV     A,#LOW ascii
+0051 2F                ADD     A,R7
+0052 F8                MOV     R0,A
+0053 A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 316
+0055 0500        R     INC     i+01H
+0057 E500        R     MOV     A,i+01H
+0059 7002              JNZ     ?C0133
+005B 0500        R     INC     i
+005D         ?C0133:
+005D 6404              XRL     A,#04H
+005F 4500        R     ORL     A,i
+0061 70E4              JNZ     ?C0067
+0063         ?C0068:
+                                           ; SOURCE LINE # 318
+0063 120000      E     LCALL   AsciiToTwoByte
+0066 8E00        R     MOV     cant,R6
+0068 8F00        R     MOV     cant+01H,R7
+                                           ; SOURCE LINE # 319
+006A E500        R     MOV     A,start+01H
+006C 2500        R     ADD     A,cant+01H
+006E F500        R     MOV     limit+01H,A
+0070 E500        R     MOV     A,start
+0072 3500        R     ADDC    A,cant
+0074 F500        R     MOV     limit,A
+                                           ; SOURCE LINE # 322
+0076 850000      R     MOV     i,start
+0079 850000      R     MOV     i+01H,start+01H
+007C         ?C0070:
+007C C3                CLR     C
+007D E500        R     MOV     A,i+01H
+007F 9500        R     SUBB    A,limit+01H
+0081 E500        R     MOV     A,i
+0083 9500        R     SUBB    A,limit
+0085 5040              JNC     ?C0071
+                                           ; SOURCE LINE # 323
+                                           ; SOURCE LINE # 324
+0087 AF00        R     MOV     R7,i+01H
+0089 AE00        R     MOV     R6,i
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 54  
+
+008B 120000      E     LCALL   _GetInputRegisterValue
+008E 8E00        R     MOV     status,R6
+0090 8F00        R     MOV     status+01H,R7
+                                           ; SOURCE LINE # 326
+0092 120000      E     LCALL   _TwoByteToAscii
+                                           ; SOURCE LINE # 327
+0095 7800        R     MOV     R0,#LOW data_count
+0097 E6                MOV     A,@R0
+0098 06                INC     @R0
+0099 2400        R     ADD     A,#LOW ascii_frame
+009B F8                MOV     R0,A
+009C A600        E     MOV     @R0,ascii+03H
+                                           ; SOURCE LINE # 328
+009E 7800        R     MOV     R0,#LOW data_count
+00A0 E6                MOV     A,@R0
+00A1 06                INC     @R0
+00A2 2400        R     ADD     A,#LOW ascii_frame
+00A4 F8                MOV     R0,A
+00A5 A600        E     MOV     @R0,ascii+02H
+                                           ; SOURCE LINE # 329
+00A7 7800        R     MOV     R0,#LOW data_count
+00A9 E6                MOV     A,@R0
+00AA 06                INC     @R0
+00AB 2400        R     ADD     A,#LOW ascii_frame
+00AD F8                MOV     R0,A
+00AE A600        E     MOV     @R0,ascii+01H
+                                           ; SOURCE LINE # 330
+00B0 7800        R     MOV     R0,#LOW data_count
+00B2 E6                MOV     A,@R0
+00B3 06                INC     @R0
+00B4 2400        R     ADD     A,#LOW ascii_frame
+00B6 F8                MOV     R0,A
+00B7 A600        E     MOV     @R0,ascii
+                                           ; SOURCE LINE # 332
+00B9 0500        R     INC     new_data_count
+00BB 0500        R     INC     new_data_count
+                                           ; SOURCE LINE # 333
+00BD 0500        R     INC     i+01H
+00BF E500        R     MOV     A,i+01H
+00C1 70B9              JNZ     ?C0070
+00C3 0500        R     INC     i
+00C5         ?C0134:
+00C5 80B5              SJMP    ?C0070
+00C7         ?C0071:
+                                           ; SOURCE LINE # 335
+00C7 AF00        R     MOV     R7,new_data_count
+00C9 120000      E     LCALL   _ByteToAscii
+                                           ; SOURCE LINE # 336
+                                           ; SOURCE LINE # 337
+                                           ; SOURCE LINE # 339
+00CC 120000      R     LCALL   L?0152
+                                           ; SOURCE LINE # 341
+00CF 020000      R     LJMP    tx_assci_frame
+             ; FUNCTION ResponseReadInputRegisters_04 (END)
+
+             ; FUNCTION ResponseForceSingleCoil_05 (BEGIN)
+                                           ; SOURCE LINE # 345
+                                           ; SOURCE LINE # 346
+                                           ; SOURCE LINE # 347
+0000 E4                CLR     A
+0001 F500        R     MOV     coilID,A
+0003 F500        R     MOV     coilID+01H,A
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 55  
+
+                                           ; SOURCE LINE # 348
+0005 F500        R     MOV     value,A
+0007 F500        R     MOV     value+01H,A
+                                           ; SOURCE LINE # 349
+;---- Variable 'i' assigned to Register 'R6/R7' ----
+0009 FF                MOV     R7,A
+000A FE                MOV     R6,A
+                                           ; SOURCE LINE # 351
+000B         ?C0074:
+                                           ; SOURCE LINE # 352
+                                           ; SOURCE LINE # 353
+000B 7400        R     MOV     A,#LOW ascii_frame+05H
+000D 2F                ADD     A,R7
+000E F8                MOV     R0,A
+000F E6                MOV     A,@R0
+0010 FD                MOV     R5,A
+0011 7400        E     MOV     A,#LOW ascii
+0013 2F                ADD     A,R7
+0014 F8                MOV     R0,A
+0015 A605              MOV     @R0,AR5
+                                           ; SOURCE LINE # 354
+0017 0F                INC     R7
+0018 BF0001            CJNE    R7,#00H,?C0135
+001B 0E                INC     R6
+001C         ?C0135:
+001C EF                MOV     A,R7
+001D 6404              XRL     A,#04H
+001F 4E                ORL     A,R6
+0020 70E9              JNZ     ?C0074
+0022         ?C0075:
+                                           ; SOURCE LINE # 355
+0022 120000      E     LCALL   AsciiToTwoByte
+0025 8E00        R     MOV     coilID,R6
+0027 8F00        R     MOV     coilID+01H,R7
+                                           ; SOURCE LINE # 356
+0029 E4                CLR     A
+002A FE                MOV     R6,A
+002B FF                MOV     R7,A
+002C         ?C0077:
+                                           ; SOURCE LINE # 357
+                                           ; SOURCE LINE # 358
+002C 7400        R     MOV     A,#LOW ascii_frame+09H
+002E 2F                ADD     A,R7
+002F F8                MOV     R0,A
+0030 E6                MOV     A,@R0
+0031 FD                MOV     R5,A
+0032 7400        E     MOV     A,#LOW ascii
+0034 2F                ADD     A,R7
+0035 F8                MOV     R0,A
+0036 A605              MOV     @R0,AR5
+                                           ; SOURCE LINE # 359
+0038 0F                INC     R7
+0039 BF0001            CJNE    R7,#00H,?C0136
+003C 0E                INC     R6
+003D         ?C0136:
+003D EF                MOV     A,R7
+003E 6404              XRL     A,#04H
+0040 4E                ORL     A,R6
+0041 70E9              JNZ     ?C0077
+0043         ?C0078:
+                                           ; SOURCE LINE # 360
+0043 120000      E     LCALL   AsciiToTwoByte
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 56  
+
+0046 8E00        R     MOV     value,R6
+0048 8F00        R     MOV     value+01H,R7
+                                           ; SOURCE LINE # 361
+004A E500        R     MOV     A,value+01H
+004C 4500        R     ORL     A,value
+004E 600E              JZ      ?C0081
+0050 E4                CLR     A
+0051 FC                MOV     R4,A
+0052 FD                MOV     R5,A
+0053 FB                MOV     R3,A
+0054 7AFF              MOV     R2,#0FFH
+0056 F9                MOV     R1,A
+0057 F8                MOV     R0,A
+0058 C3                CLR     C
+0059 120000      E     LCALL   ?C?SLCMP
+005C 701A              JNZ     ?C0080
+005E         ?C0081:
+                                           ; SOURCE LINE # 362
+                                           ; SOURCE LINE # 363
+005E D3                SETB    C
+005F E500        R     MOV     A,value+01H
+0061 9400              SUBB    A,#00H
+0063 E500        R     MOV     A,value
+0065 9400              SUBB    A,#00H
+0067 4004              JC      ?C0082
+0069 7D01              MOV     R5,#01H
+006B 8002              SJMP    ?C0083
+006D         ?C0082:
+006D 7D00              MOV     R5,#00H
+006F         ?C0083:
+006F AF00        R     MOV     R7,coilID+01H
+0071 AE00        R     MOV     R6,coilID
+0073 120000      E     LCALL   _SetCoilValue
+                                           ; SOURCE LINE # 364
+0076 8003              SJMP    ?C0084
+0078         ?C0080:
+                                           ; SOURCE LINE # 366
+                                           ; SOURCE LINE # 367
+0078 020000      R     LJMP    clear_frame
+                                           ; SOURCE LINE # 369
+007B         ?C0084:
+                                           ; SOURCE LINE # 371
+007B 120000      R     LCALL   gen_lrc
+                                           ; SOURCE LINE # 373
+007E 120000      R     LCALL   tx_assci_frame
+                                           ; SOURCE LINE # 375
+0081         ?C0085:
+0081 22                RET     
+             ; FUNCTION ResponseForceSingleCoil_05 (END)
+
+             ; FUNCTION ResponsePresetSingleRegister_06 (BEGIN)
+                                           ; SOURCE LINE # 377
+                                           ; SOURCE LINE # 378
+                                           ; SOURCE LINE # 379
+0000 E4                CLR     A
+0001 F500        R     MOV     registerID,A
+0003 F500        R     MOV     registerID+01H,A
+                                           ; SOURCE LINE # 380
+0005 F500        R     MOV     value,A
+0007 F500        R     MOV     value+01H,A
+                                           ; SOURCE LINE # 381
+;---- Variable 'i' assigned to Register 'R6/R7' ----
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 57  
+
+0009 FF                MOV     R7,A
+000A FE                MOV     R6,A
+                                           ; SOURCE LINE # 383
+000B         ?C0086:
+                                           ; SOURCE LINE # 384
+                                           ; SOURCE LINE # 385
+000B 7400        R     MOV     A,#LOW ascii_frame+05H
+000D 2F                ADD     A,R7
+000E F8                MOV     R0,A
+000F E6                MOV     A,@R0
+0010 FD                MOV     R5,A
+0011 7400        E     MOV     A,#LOW ascii
+0013 2F                ADD     A,R7
+0014 F8                MOV     R0,A
+0015 A605              MOV     @R0,AR5
+                                           ; SOURCE LINE # 386
+0017 0F                INC     R7
+0018 BF0001            CJNE    R7,#00H,?C0137
+001B 0E                INC     R6
+001C         ?C0137:
+001C EF                MOV     A,R7
+001D 6404              XRL     A,#04H
+001F 4E                ORL     A,R6
+0020 70E9              JNZ     ?C0086
+0022         ?C0087:
+                                           ; SOURCE LINE # 387
+0022 120000      E     LCALL   AsciiToTwoByte
+0025 8E00        R     MOV     registerID,R6
+0027 8F00        R     MOV     registerID+01H,R7
+                                           ; SOURCE LINE # 388
+0029 E4                CLR     A
+002A FE                MOV     R6,A
+002B FF                MOV     R7,A
+002C         ?C0089:
+                                           ; SOURCE LINE # 389
+                                           ; SOURCE LINE # 390
+002C 7400        R     MOV     A,#LOW ascii_frame+09H
+002E 2F                ADD     A,R7
+002F F8                MOV     R0,A
+0030 E6                MOV     A,@R0
+0031 FD                MOV     R5,A
+0032 7400        E     MOV     A,#LOW ascii
+0034 2F                ADD     A,R7
+0035 F8                MOV     R0,A
+0036 A605              MOV     @R0,AR5
+                                           ; SOURCE LINE # 391
+0038 0F                INC     R7
+0039 BF0001            CJNE    R7,#00H,?C0138
+003C 0E                INC     R6
+003D         ?C0138:
+003D EF                MOV     A,R7
+003E 6404              XRL     A,#04H
+0040 4E                ORL     A,R6
+0041 70E9              JNZ     ?C0089
+0043         ?C0090:
+                                           ; SOURCE LINE # 392
+0043 120000      E     LCALL   AsciiToTwoByte
+0046 8E00        R     MOV     value,R6
+0048 8F00        R     MOV     value+01H,R7
+                                           ; SOURCE LINE # 393
+004A AD00        R     MOV     R5,value+01H
+004C AC00        R     MOV     R4,value
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 58  
+
+004E AF00        R     MOV     R7,registerID+01H
+0050 AE00        R     MOV     R6,registerID
+0052 120000      E     LCALL   _SetHoldingRegisterValue
+                                           ; SOURCE LINE # 395
+0055 120000      R     LCALL   gen_lrc
+                                           ; SOURCE LINE # 397
+0058 020000      R     LJMP    tx_assci_frame
+             ; FUNCTION ResponsePresetSingleRegister_06 (END)
+
+             ; FUNCTION ResponseForceMultipleCoils_15 (BEGIN)
+                                           ; SOURCE LINE # 401
+                                           ; SOURCE LINE # 402
+                                           ; SOURCE LINE # 403
+0000 E4                CLR     A
+0001 F500        R     MOV     start,A
+0003 F500        R     MOV     start+01H,A
+0005 F500        R     MOV     cant,A
+0007 F500        R     MOV     cant+01H,A
+                                           ; SOURCE LINE # 404
+0009 F500        R     MOV     i,A
+000B F500        R     MOV     i+01H,A
+000D F500        R     MOV     limit,A
+000F F500        R     MOV     limit+01H,A
+                                           ; SOURCE LINE # 405
+0011 F500        R     MOV     coils,A
+0013 F500        R     MOV     k,A
+0015 F500        R     MOV     new_data_count,A
+0017 F500        R     MOV     tempAdr,A
+                                           ; SOURCE LINE # 406
+0019 F500        R     MOV     index,A
+001B F500        R     MOV     offset,A
+                                           ; SOURCE LINE # 410
+001D F500        R     MOV     i,A
+001F F500        R     MOV     i+01H,A
+0021         ?C0093:
+                                           ; SOURCE LINE # 411
+                                           ; SOURCE LINE # 412
+0021 AF00        R     MOV     R7,i+01H
+0023 7400        R     MOV     A,#LOW ascii_frame+05H
+0025 2F                ADD     A,R7
+0026 F8                MOV     R0,A
+0027 E6                MOV     A,@R0
+0028 FE                MOV     R6,A
+0029 7400        E     MOV     A,#LOW ascii
+002B 2F                ADD     A,R7
+002C F8                MOV     R0,A
+002D A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 413
+002F 0500        R     INC     i+01H
+0031 E500        R     MOV     A,i+01H
+0033 7002              JNZ     ?C0139
+0035 0500        R     INC     i
+0037         ?C0139:
+0037 6404              XRL     A,#04H
+0039 4500        R     ORL     A,i
+003B 70E4              JNZ     ?C0093
+003D         ?C0094:
+                                           ; SOURCE LINE # 414
+003D 120000      E     LCALL   AsciiToTwoByte
+0040 8E00        R     MOV     start,R6
+0042 8F00        R     MOV     start+01H,R7
+                                           ; SOURCE LINE # 415
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 59  
+
+0044 E4                CLR     A
+0045 F500        R     MOV     i,A
+0047 F500        R     MOV     i+01H,A
+0049         ?C0096:
+                                           ; SOURCE LINE # 416
+                                           ; SOURCE LINE # 417
+0049 AF00        R     MOV     R7,i+01H
+004B 7400        R     MOV     A,#LOW ascii_frame+09H
+004D 2F                ADD     A,R7
+004E F8                MOV     R0,A
+004F E6                MOV     A,@R0
+0050 FE                MOV     R6,A
+0051 7400        E     MOV     A,#LOW ascii
+0053 2F                ADD     A,R7
+0054 F8                MOV     R0,A
+0055 A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 418
+0057 0500        R     INC     i+01H
+0059 E500        R     MOV     A,i+01H
+005B 7002              JNZ     ?C0140
+005D 0500        R     INC     i
+005F         ?C0140:
+005F 6404              XRL     A,#04H
+0061 4500        R     ORL     A,i
+0063 70E4              JNZ     ?C0096
+0065         ?C0097:
+                                           ; SOURCE LINE # 419
+0065 120000      E     LCALL   AsciiToTwoByte
+0068 8E00        R     MOV     cant,R6
+006A 8F00        R     MOV     cant+01H,R7
+                                           ; SOURCE LINE # 420
+006C E500        R     MOV     A,start+01H
+006E 2500        R     ADD     A,cant+01H
+0070 F500        R     MOV     limit+01H,A
+0072 E500        R     MOV     A,start
+0074 3500        R     ADDC    A,cant
+0076 F500        R     MOV     limit,A
+                                           ; SOURCE LINE # 422
+0078 7800        R     MOV     R0,#LOW ascii_frame+0DH
+007A E6                MOV     A,@R0
+007B FF                MOV     R7,A
+007C 08                INC     R0
+007D E6                MOV     A,@R0
+007E FD                MOV     R5,A
+007F 120000      E     LCALL   _AsciiToByte
+0082 8F00        R     MOV     new_data_count,R7
+                                           ; SOURCE LINE # 423
+0084 7800        R     MOV     R0,#LOW data_count
+0086 760F              MOV     @R0,#0FH
+                                           ; SOURCE LINE # 426
+0088 E4                CLR     A
+0089 7800        R     MOV     R0,#LOW byte_count
+008B F6                MOV     @R0,A
+                                           ; SOURCE LINE # 427
+008C F500        R     MOV     i,A
+008E F500        R     MOV     i+01H,A
+0090         ?C0099:
+0090 C3                CLR     C
+0091 E500        R     MOV     A,i+01H
+0093 9500        R     SUBB    A,new_data_count
+0095 E500        R     MOV     A,i
+0097 9400              SUBB    A,#00H
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 60  
+
+0099 5032              JNC     ?C0100
+                                           ; SOURCE LINE # 428
+                                           ; SOURCE LINE # 429
+009B 7800        R     MOV     R0,#LOW data_count
+009D E6                MOV     A,@R0
+009E FE                MOV     R6,A
+009F 2400        R     ADD     A,#LOW ascii_frame
+00A1 F8                MOV     R0,A
+00A2 E6                MOV     A,@R0
+00A3 FF                MOV     R7,A
+00A4 7400        R     MOV     A,#LOW ascii_frame+01H
+00A6 2E                ADD     A,R6
+00A7 F8                MOV     R0,A
+00A8 E6                MOV     A,@R0
+00A9 FD                MOV     R5,A
+00AA 120000      E     LCALL   _AsciiToByte
+00AD 8F00        R     MOV     coils,R7
+                                           ; SOURCE LINE # 430
+00AF 7800        R     MOV     R0,#LOW data_count
+00B1 06                INC     @R0
+00B2 06                INC     @R0
+                                           ; SOURCE LINE # 431
+00B3 AF00        R     MOV     R7,coils
+00B5 7800        R     MOV     R0,#LOW byte_count
+00B7 E6                MOV     A,@R0
+00B8 06                INC     @R0
+00B9 25E0              ADD     A,ACC
+00BB 2400        R     ADD     A,#LOW parameters
+00BD F8                MOV     R0,A
+00BE 7600              MOV     @R0,#00H
+00C0 08                INC     R0
+00C1 A607              MOV     @R0,AR7
+                                           ; SOURCE LINE # 432
+00C3 0500        R     INC     i+01H
+00C5 E500        R     MOV     A,i+01H
+00C7 70C7              JNZ     ?C0099
+00C9 0500        R     INC     i
+00CB         ?C0141:
+00CB 80C3              SJMP    ?C0099
+00CD         ?C0100:
+                                           ; SOURCE LINE # 435
+00CD 850000      R     MOV     i,start
+00D0 850000      R     MOV     i+01H,start+01H
+00D3         ?C0102:
+00D3 C3                CLR     C
+00D4 E500        R     MOV     A,i+01H
+00D6 9500        R     SUBB    A,limit+01H
+00D8 E500        R     MOV     A,i
+00DA 9500        R     SUBB    A,limit
+00DC 504D              JNC     ?C0103
+                                           ; SOURCE LINE # 436
+                                           ; SOURCE LINE # 437
+00DE C3                CLR     C
+00DF E500        R     MOV     A,i+01H
+00E1 9500        R     SUBB    A,start+01H
+00E3 F500        R     MOV     tempAdr,A
+                                           ; SOURCE LINE # 438
+00E5 13                RRC     A
+00E6 13                RRC     A
+00E7 13                RRC     A
+00E8 541F              ANL     A,#01FH
+00EA F500        R     MOV     index,A
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 61  
+
+                                           ; SOURCE LINE # 439
+00EC E500        R     MOV     A,tempAdr
+00EE 5407              ANL     A,#07H
+00F0 F500        R     MOV     offset,A
+                                           ; SOURCE LINE # 440
+00F2 E500        R     MOV     A,index
+00F4 25E0              ADD     A,ACC
+00F6 2400        R     ADD     A,#LOW parameters+01H
+00F8 F9                MOV     R1,A
+00F9 E7                MOV     A,@R1
+00FA FF                MOV     R7,A
+00FB AE00        R     MOV     R6,offset
+00FD A806              MOV     R0,AR6
+00FF 7401              MOV     A,#01H
+0101 08                INC     R0
+0102 8002              SJMP    ?C0143
+0104         ?C0142:
+0104 C3                CLR     C
+0105 33                RLC     A
+0106         ?C0143:
+0106 D8FC              DJNZ    R0,?C0142
+0108 5F                ANL     A,R7
+0109 F500        R     MOV     k,A
+                                           ; SOURCE LINE # 441
+010B D3                SETB    C
+010C 9400              SUBB    A,#00H
+010E 7480              MOV     A,#080H
+0110 9480              SUBB    A,#080H
+0112 4004              JC      ?C0105
+0114 7D01              MOV     R5,#01H
+0116 8002              SJMP    ?C0106
+0118         ?C0105:
+0118 7D00              MOV     R5,#00H
+011A         ?C0106:
+011A AF00        R     MOV     R7,i+01H
+011C AE00        R     MOV     R6,i
+011E 120000      E     LCALL   _SetCoilValue
+                                           ; SOURCE LINE # 442
+0121 0500        R     INC     i+01H
+0123 E500        R     MOV     A,i+01H
+0125 70AC              JNZ     ?C0102
+0127 0500        R     INC     i
+0129         ?C0144:
+0129 80A8              SJMP    ?C0102
+012B         ?C0103:
+                                           ; SOURCE LINE # 444
+012B 7800        R     MOV     R0,#LOW data_count
+012D 760D              MOV     @R0,#0DH
+                                           ; SOURCE LINE # 446
+012F 120000      R     LCALL   gen_lrc
+                                           ; SOURCE LINE # 448
+0132 020000      R     LJMP    tx_assci_frame
+             ; FUNCTION ResponseForceMultipleCoils_15 (END)
+
+             ; FUNCTION ResponsePresetMultipleRegisters_16 (BEGIN)
+                                           ; SOURCE LINE # 452
+                                           ; SOURCE LINE # 453
+                                           ; SOURCE LINE # 454
+0000 E4                CLR     A
+0001 F500        R     MOV     start,A
+0003 F500        R     MOV     start+01H,A
+0005 F500        R     MOV     cant,A
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 62  
+
+0007 F500        R     MOV     cant+01H,A
+                                           ; SOURCE LINE # 455
+0009 F500        R     MOV     i,A
+000B F500        R     MOV     i+01H,A
+000D F500        R     MOV     limit,A
+000F F500        R     MOV     limit+01H,A
+0011 F500        R     MOV     reg_value,A
+0013 F500        R     MOV     reg_value+01H,A
+                                           ; SOURCE LINE # 456
+0015 F500        R     MOV     j,A
+                                           ; SOURCE LINE # 459
+0017 F500        R     MOV     i,A
+0019 F500        R     MOV     i+01H,A
+001B         ?C0108:
+                                           ; SOURCE LINE # 460
+                                           ; SOURCE LINE # 461
+001B AF00        R     MOV     R7,i+01H
+001D 7400        R     MOV     A,#LOW ascii_frame+05H
+001F 2F                ADD     A,R7
+0020 F8                MOV     R0,A
+0021 E6                MOV     A,@R0
+0022 FE                MOV     R6,A
+0023 7400        E     MOV     A,#LOW ascii
+0025 2F                ADD     A,R7
+0026 F8                MOV     R0,A
+0027 A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 462
+0029 0500        R     INC     i+01H
+002B E500        R     MOV     A,i+01H
+002D 7002              JNZ     ?C0145
+002F 0500        R     INC     i
+0031         ?C0145:
+0031 6404              XRL     A,#04H
+0033 4500        R     ORL     A,i
+0035 70E4              JNZ     ?C0108
+0037         ?C0109:
+                                           ; SOURCE LINE # 463
+0037 120000      E     LCALL   AsciiToTwoByte
+003A 8E00        R     MOV     start,R6
+003C 8F00        R     MOV     start+01H,R7
+                                           ; SOURCE LINE # 464
+003E E4                CLR     A
+003F F500        R     MOV     i,A
+0041 F500        R     MOV     i+01H,A
+0043         ?C0111:
+                                           ; SOURCE LINE # 465
+                                           ; SOURCE LINE # 466
+0043 AF00        R     MOV     R7,i+01H
+0045 7400        R     MOV     A,#LOW ascii_frame+09H
+0047 2F                ADD     A,R7
+0048 F8                MOV     R0,A
+0049 E6                MOV     A,@R0
+004A FE                MOV     R6,A
+004B 7400        E     MOV     A,#LOW ascii
+004D 2F                ADD     A,R7
+004E F8                MOV     R0,A
+004F A606              MOV     @R0,AR6
+                                           ; SOURCE LINE # 467
+0051 0500        R     INC     i+01H
+0053 E500        R     MOV     A,i+01H
+0055 7002              JNZ     ?C0146
+0057 0500        R     INC     i
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 63  
+
+0059         ?C0146:
+0059 6404              XRL     A,#04H
+005B 4500        R     ORL     A,i
+005D 70E4              JNZ     ?C0111
+005F         ?C0112:
+                                           ; SOURCE LINE # 468
+005F 120000      E     LCALL   AsciiToTwoByte
+0062 8E00        R     MOV     cant,R6
+0064 8F00        R     MOV     cant+01H,R7
+                                           ; SOURCE LINE # 469
+0066 E500        R     MOV     A,start+01H
+0068 2500        R     ADD     A,cant+01H
+006A F500        R     MOV     limit+01H,A
+006C E500        R     MOV     A,start
+006E 3500        R     ADDC    A,cant
+0070 F500        R     MOV     limit,A
+                                           ; SOURCE LINE # 471
+0072 7800        R     MOV     R0,#LOW ascii_frame+0DH
+0074 E6                MOV     A,@R0
+0075 FF                MOV     R7,A
+0076 08                INC     R0
+0077 E6                MOV     A,@R0
+0078 FD                MOV     R5,A
+0079 120000      E     LCALL   _AsciiToByte
+007C 7800        R     MOV     R0,#LOW byte_count
+007E A607              MOV     @R0,AR7
+                                           ; SOURCE LINE # 472
+0080 7800        R     MOV     R0,#LOW data_count
+0082 760F              MOV     @R0,#0FH
+                                           ; SOURCE LINE # 475
+0084 7800        R     MOV     R0,#LOW byte_count
+0086 E6                MOV     A,@R0
+0087 C3                CLR     C
+0088 13                RRC     A
+0089 F6                MOV     @R0,A
+                                           ; SOURCE LINE # 476
+008A E4                CLR     A
+008B F500        R     MOV     i,A
+008D F500        R     MOV     i+01H,A
+008F         ?C0114:
+008F 7800        R     MOV     R0,#LOW byte_count
+0091 E6                MOV     A,@R0
+0092 FF                MOV     R7,A
+0093 C3                CLR     C
+0094 E500        R     MOV     A,i+01H
+0096 9F                SUBB    A,R7
+0097 E500        R     MOV     A,i
+0099 9400              SUBB    A,#00H
+009B 504D              JNC     ?C0115
+                                           ; SOURCE LINE # 477
+                                           ; SOURCE LINE # 478
+009D E4                CLR     A
+009E F500        R     MOV     j,A
+00A0         ?C0117:
+00A0 AF00        R     MOV     R7,j
+00A2 EF                MOV     A,R7
+00A3 33                RLC     A
+00A4 95E0              SUBB    A,ACC
+00A6 FE                MOV     R6,A
+00A7 C3                CLR     C
+00A8 EF                MOV     A,R7
+00A9 9404              SUBB    A,#04H
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 64  
+
+00AB EE                MOV     A,R6
+00AC 6480              XRL     A,#080H
+00AE 9480              SUBB    A,#080H
+00B0 5014              JNC     ?C0118
+                                           ; SOURCE LINE # 479
+                                           ; SOURCE LINE # 480
+00B2 7800        R     MOV     R0,#LOW data_count
+00B4 E6                MOV     A,@R0
+00B5 06                INC     @R0
+00B6 2400        R     ADD     A,#LOW ascii_frame
+00B8 F8                MOV     R0,A
+00B9 E6                MOV     A,@R0
+00BA FF                MOV     R7,A
+00BB 7400        E     MOV     A,#LOW ascii
+00BD 2500        R     ADD     A,j
+00BF F8                MOV     R0,A
+00C0 A607              MOV     @R0,AR7
+                                           ; SOURCE LINE # 481
+00C2 0500        R     INC     j
+00C4 80DA              SJMP    ?C0117
+00C6         ?C0118:
+                                           ; SOURCE LINE # 482
+00C6 120000      E     LCALL   AsciiToTwoByte
+00C9 8E00        R     MOV     reg_value,R6
+00CB 8F00        R     MOV     reg_value+01H,R7
+                                           ; SOURCE LINE # 483
+00CD 0500        R     INC     start+01H
+00CF E500        R     MOV     A,start+01H
+00D1 7002              JNZ     ?C0147
+00D3 0500        R     INC     start
+00D5         ?C0147:
+00D5 14                DEC     A
+00D6 25E0              ADD     A,ACC
+00D8 2400        E     ADD     A,#LOW holding_registers_array
+00DA F8                MOV     R0,A
+00DB A600        R     MOV     @R0,reg_value
+00DD 08                INC     R0
+00DE A600        R     MOV     @R0,reg_value+01H
+                                           ; SOURCE LINE # 484
+00E0 0500        R     INC     i+01H
+00E2 E500        R     MOV     A,i+01H
+00E4 7002              JNZ     ?C0148
+00E6 0500        R     INC     i
+00E8         ?C0148:
+00E8 80A5              SJMP    ?C0114
+00EA         ?C0115:
+                                           ; SOURCE LINE # 486
+00EA 7800        R     MOV     R0,#LOW data_count
+00EC 760D              MOV     @R0,#0DH
+                                           ; SOURCE LINE # 488
+00EE 120000      R     LCALL   gen_lrc
+                                           ; SOURCE LINE # 490
+00F1 020000      R     LJMP    tx_assci_frame
+             ; FUNCTION ResponsePresetMultipleRegisters_16 (END)
+
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 65  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+uint16_t . . . . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+P0 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0080H  1
+P1 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0090H  1
+_GetInputRegisterValue . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+P2 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00A0H  1
+P3 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B0H  1
+XICON. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C0H  1
+AsciiToTwoByte . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+_TwoByteToAscii. . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+P4 . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00E8H  1
+int_least32_t. . . . . . . . . . . . .  TYPEDEF  -----  LONG     -----  4
+int_least16_t. . . . . . . . . . . . .  TYPEDEF  -----  INT      -----  2
+int32_t. . . . . . . . . . . . . . . .  TYPEDEF  -----  LONG     -----  4
+int16_t. . . . . . . . . . . . . . . .  TYPEDEF  -----  INT      -----  2
+ascii. . . . . . . . . . . . . . . . .  EXTERN   DATA   ARRAY    -----  4
+IE . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00A8H  1
+uint_fast32_t. . . . . . . . . . . . .  TYPEDEF  -----  U_LONG   -----  4
+uint_fast16_t. . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+int_fast32_t . . . . . . . . . . . . .  TYPEDEF  -----  LONG     -----  4
+IP . . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00B8H  1
+int_fast16_t . . . . . . . . . . . . .  TYPEDEF  -----  INT      -----  2
+ResponseReadCoilsStatus_01 . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  val. . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   000BH  1
+  start. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  cant . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0004H  2
+  limit. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0006H  2
+  coils. . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0008H  1
+  k. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0009H  1
+  new_data_count . . . . . . . . . . .  AUTO     DATA   U_CHAR   000AH  1
+TI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0099H  1
+ResponseReadHoldingRegisters_03. . . .  PUBLIC   CODE   PROC     0000H  -----
+  start. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  cant . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0004H  2
+  limit. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0006H  2
+  status . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0008H  2
+  new_data_count . . . . . . . . . . .  AUTO     DATA   U_CHAR   000AH  1
+CCON . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D8H  1
+ResponsePresetMultipleRegisters_16 . .  PUBLIC   CODE   PROC     0000H  -----
+  start. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  cant . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0004H  2
+  limit. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0006H  2
+  reg_value. . . . . . . . . . . . . .  AUTO     DATA   U_INT    0008H  2
+  j. . . . . . . . . . . . . . . . . .  AUTO     DATA   CHAR     000AH  1
+  byte_count . . . . . . . . . . . . .  AUTO     IDATA  U_CHAR   0000H  1
+data_count . . . . . . . . . . . . . .  PUBLIC   IDATA  U_CHAR   0000H  1
+execute_modbus_command . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  is_me. . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0000H  1
+  fun. . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0001H  1
+  lrc. . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0002H  1
+_GetCoilValue. . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+holding_registers_array. . . . . . . .  EXTERN   IDATA  ARRAY    -----  4
+SBUF . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0099H  1
+ResponseReadInputStatus_02 . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  val. . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   000BH  1
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 66  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+  start. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  cant . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0004H  2
+  limit. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0006H  2
+  inputs . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0008H  1
+  k. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0009H  1
+  new_data_count . . . . . . . . . . .  AUTO     DATA   U_CHAR   000AH  1
+SCON . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0098H  1
+TCON . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   0088H  1
+_GetInputValue . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+_GetHoldingRegisterValue . . . . . . .  EXTERN   CODE   PROC     -----  -----
+_SetCoilValue. . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+lrc_calc . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  result . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0000H  1
+  i. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0001H  1
+broadcast. . . . . . . . . . . . . . .  PUBLIC   DATA   BIT      0000H  1
+send_count . . . . . . . . . . . . . .  PUBLIC   IDATA  U_CHAR   0001H  1
+_SetHoldingRegisterValue . . . . . . .  EXTERN   CODE   PROC     -----  -----
+ResponsePresetSingleRegister_06. . . .  PUBLIC   CODE   PROC     0000H  -----
+  registerID . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  value. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  * REG *  DATA   U_INT    0006H  2
+_AsciiToByte . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+_ByteToAscii . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+uint_least8_t. . . . . . . . . . . . .  TYPEDEF  -----  U_CHAR   -----  1
+TB8. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009BH  1
+uint8_t. . . . . . . . . . . . . . . .  TYPEDEF  -----  U_CHAR   -----  1
+tx_assci_frame . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+int_least8_t . . . . . . . . . . . . .  TYPEDEF  -----  CHAR     -----  1
+int8_t . . . . . . . . . . . . . . . .  TYPEDEF  -----  CHAR     -----  1
+ResponseForceMultipleCoils_15. . . . .  PUBLIC   CODE   PROC     0000H  -----
+  start. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  cant . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0004H  2
+  limit. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0006H  2
+  coils. . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0008H  1
+  k. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   0009H  1
+  new_data_count . . . . . . . . . . .  AUTO     DATA   U_CHAR   000AH  1
+  tempAdr. . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   000BH  1
+  index. . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   000CH  1
+  offset . . . . . . . . . . . . . . .  AUTO     DATA   U_CHAR   000DH  1
+  parameters . . . . . . . . . . . . .  AUTO     IDATA  ARRAY    0000H  40
+  byte_count . . . . . . . . . . . . .  AUTO     IDATA  U_CHAR   0028H  1
+gen_lrc. . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0007H  -----
+uintmax_t. . . . . . . . . . . . . . .  TYPEDEF  -----  U_LONG   -----  4
+uint_fast8_t . . . . . . . . . . . . .  TYPEDEF  -----  U_CHAR   -----  1
+T2CON. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C8H  1
+intmax_t . . . . . . . . . . . . . . .  TYPEDEF  -----  LONG     -----  4
+int_fast8_t. . . . . . . . . . . . . .  TYPEDEF  -----  CHAR     -----  1
+ResponseReadInputRegisters_04. . . . .  PUBLIC   CODE   PROC     0000H  -----
+  start. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  cant . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0004H  2
+  limit. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0006H  2
+  status . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0008H  2
+  new_data_count . . . . . . . . . . .  AUTO     DATA   U_CHAR   000AH  1
+uintptr_t. . . . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+C51 COMPILER V9.60.0.0   MODBUS                                                            10/13/2022 12:12:50 PAGE 67  
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+clear_frame. . . . . . . . . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  i. . . . . . . . . . . . . . . . . .  * REG *  DATA   U_CHAR   0007H  1
+intptr_t . . . . . . . . . . . . . . .  TYPEDEF  -----  INT      -----  2
+uint_least32_t . . . . . . . . . . . .  TYPEDEF  -----  U_LONG   -----  4
+ascii_frame. . . . . . . . . . . . . .  PUBLIC   IDATA  ARRAY    0002H  60
+PSW. . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00D0H  1
+RS485En. . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B2H  1
+uint_least16_t . . . . . . . . . . . .  TYPEDEF  -----  U_INT    -----  2
+uint32_t . . . . . . . . . . . . . . .  TYPEDEF  -----  U_LONG   -----  4
+ResponseForceSingleCoil_05 . . . . . .  PUBLIC   CODE   PROC     0000H  -----
+  coilID . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0000H  2
+  value. . . . . . . . . . . . . . . .  AUTO     DATA   U_INT    0002H  2
+  i. . . . . . . . . . . . . . . . . .  * REG *  DATA   U_INT    0006H  2
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2002    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      84
+   IDATA SIZE       =     62      42
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

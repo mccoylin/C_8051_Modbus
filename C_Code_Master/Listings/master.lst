@@ -1,0 +1,379 @@
+C51 COMPILER V9.60.0.0   MASTER                                                            10/13/2022 12:12:43 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MASTER
+OBJECT MODULE PLACED IN .\Objects\master.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE master.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Listings\master.lst
+                    -) TABS(2) OBJECT(.\Objects\master.obj)
+
+line level    source
+
+   1          
+   2          #include "..\\stdint.h"
+*** WARNING C322 IN LINE 36 OF ..\\stdint.h: unknown identifier
+   3          
+   4          #include "REG_MPC82G516.h"
+   5          
+   6          #include "main.h"
+   7          #include "..\\ascii.h"
+   8          #include "master.h"
+   9          
+  10          
+  11          uint8_t idata ascii_frame[ASCII_FRAME_SIZE]; // !!!size = 255
+  12          uint8_t idata data_count = 0;
+  13          
+  14          uint8_t idata send_count = 0;
+  15          
+  16          bit broadcast = 0;
+  17          
+  18          /* functions codes parameters */
+  19          uint16_t idata parameters[10];
+  20          uint8_t byte_count = 0;
+  21          
+  22          
+  23          /* aux functions */
+  24          void gen_start(void)
+  25          {
+  26   1          ascii_frame[0] = 0x3A;
+  27   1      }
+  28          
+  29          void gen_dir(uint8_t val)  //Gen dir data
+  30          {
+  31   1          ByteToAscii(val);
+  32   1          ascii_frame[1] = ascii[0];
+  33   1          ascii_frame[2] = ascii[1];
+  34   1      }
+  35          
+  36          void gen_function(uint8_t val) // Gen func code
+  37          {
+  38   1          ByteToAscii(val);
+  39   1          ascii_frame[3] = ascii[0];
+  40   1          ascii_frame[4] = ascii[1];
+  41   1      }
+  42          
+  43          void gen_lrc(void)
+  44          {
+  45   1          ByteToAscii(lrc_calc());
+  46   1          ascii_frame[data_count++] = ascii[0];
+  47   1          ascii_frame[data_count++] = ascii[1];
+  48   1         
+  49   1          ascii_frame[data_count++] = CR;
+  50   1          ascii_frame[data_count++] = LF;    
+  51   1      }
+  52          
+  53          void clear_frame(void)
+C51 COMPILER V9.60.0.0   MASTER                                                            10/13/2022 12:12:43 PAGE 2   
+
+  54          {    
+  55   1          uint8_t i = 0;
+  56   1          data_count = 0;
+  57   1          send_count = 0;
+  58   1          for ( i = 0; i < ASCII_FRAME_SIZE; i++ )
+  59   1          {
+  60   2              ascii_frame[i] = 0;
+  61   2          }
+  62   1      }
+  63          
+  64          void tx_assci_frame(void)
+  65          {     
+  66   1          RS485En = 1; // set for tx
+  67   1         
+  68   1          send_count = 1;
+  69   1          TI = 0;
+  70   1          TB8 = 0;        
+  71   1          SBUF = ascii_frame[0];
+  72   1          while ( send_count != 0 )
+  73   1          {
+  74   2              // null
+  75   2          }
+  76   1      }
+  77          
+  78          uint8_t lrc_calc(void) 
+  79          {
+  80   1          uint8_t result = 0, i = 0;    
+  81   1              
+  82   1          for ( i = 1; i < data_count; i+=2 )
+  83   1          {
+  84   2              result += AsciiToByte(ascii_frame[i], ascii_frame[i+1]);
+  85   2          }
+  86   1      
+  87   1          result = ~result;
+  88   1          return ( result + 1 );
+  89   1      }
+  90          
+  91          void tx_byte2(char byte)     //transmit a single byte
+  92          {      
+  93   1          TI = 0;
+  94   1          TB8 = 0;
+  95   1          SBUF = byte;
+  96   1          while (!TI)
+  97   1          {
+  98   2              // null
+  99   2          }
+ 100   1      }
+ 101          
+ 102          /* functions Codes */
+ 103          void ReadCoilStatus_01(uint8_t dir, uint16_t start, uint16_t cant) // 0x01, OK
+ 104          {
+ 105   1          int i = 0;
+ 106   1      
+ 107   1          gen_start();
+ 108   1          gen_dir(dir);
+ 109   1          gen_function(1);    // 0x01    
+ 110   1          data_count = 5;
+ 111   1      
+ 112   1          TwoByteToAscii(start - 1);
+ 113   1          for ( i = 3; i >= 0; i-- )
+ 114   1          {    
+ 115   2              ascii_frame[data_count++] = ascii[i];     
+C51 COMPILER V9.60.0.0   MASTER                                                            10/13/2022 12:12:43 PAGE 3   
+
+ 116   2          }
+ 117   1          
+ 118   1          TwoByteToAscii(cant);
+ 119   1          for ( i = 3; i >= 0; i-- )
+ 120   1          {       
+ 121   2              ascii_frame[data_count++] = ascii[i];     
+ 122   2          }     
+ 123   1          gen_lrc();
+ 124   1      
+ 125   1          tx_assci_frame();
+ 126   1      }
+ 127          
+ 128          void ReadInputStatus_02(uint8_t dir, uint16_t start, uint16_t cant) // 0x02, OK!!!
+ 129          {
+ 130   1          int i = 0;
+ 131   1          
+ 132   1          gen_start();
+ 133   1          gen_dir(dir);
+ 134   1          gen_function(2);    // 0x02    
+ 135   1          data_count = 5;
+ 136   1          
+ 137   1          TwoByteToAscii(start - 1);
+ 138   1          for ( i = 3; i >= 0; i-- )
+ 139   1          {    
+ 140   2              ascii_frame[data_count++] = ascii[i];     
+ 141   2          }
+ 142   1          
+ 143   1          TwoByteToAscii(cant);
+ 144   1          for ( i = 3; i >= 0; i-- )
+ 145   1          {       
+ 146   2              ascii_frame[data_count++] = ascii[i];     
+ 147   2          }     
+ 148   1          gen_lrc();
+ 149   1      
+ 150   1          tx_assci_frame();
+ 151   1      }
+ 152          
+ 153          
+ 154          void ReadHoldingRegisters_03(uint8_t dir, uint16_t start, uint16_t cant) // 0x03, OK!!
+ 155          {
+ 156   1          int i = 0;
+ 157   1          
+ 158   1          gen_start();
+ 159   1          gen_dir(dir);
+ 160   1          gen_function(3);    // 0x03
+ 161   1          data_count = 5;
+ 162   1          
+ 163   1          TwoByteToAscii(start - 1);
+ 164   1          for ( i = 3; i >= 0; i-- )
+ 165   1          {    
+ 166   2              ascii_frame[data_count++] = ascii[i];     
+ 167   2          }
+ 168   1          
+ 169   1          TwoByteToAscii(cant);
+ 170   1          for ( i = 3; i >= 0; i-- )
+ 171   1          {       
+ 172   2              ascii_frame[data_count++] = ascii[i];     
+ 173   2          }     
+ 174   1          gen_lrc();
+ 175   1      
+ 176   1          tx_assci_frame();
+ 177   1      }
+C51 COMPILER V9.60.0.0   MASTER                                                            10/13/2022 12:12:43 PAGE 4   
+
+ 178          
+ 179          
+ 180          void ReadInputRegisters_04(uint8_t dir, uint16_t start, uint16_t cant)  // 0x04 , OK!!!
+ 181          {
+ 182   1          int i = 0;
+ 183   1          
+ 184   1          gen_start();
+ 185   1          gen_dir(dir);
+ 186   1          gen_function(4);    // 0x04
+ 187   1          data_count = 5;
+ 188   1          
+ 189   1          TwoByteToAscii(start - 1);
+ 190   1          for ( i = 3; i >= 0; i-- )
+ 191   1          {    
+ 192   2              ascii_frame[data_count++] = ascii[i];     
+ 193   2          }
+ 194   1          
+ 195   1          TwoByteToAscii(cant);
+ 196   1          for ( i = 3; i >= 0; i-- )
+ 197   1          {       
+ 198   2              ascii_frame[data_count++] = ascii[i];     
+ 199   2          }     
+ 200   1          gen_lrc();
+ 201   1      
+ 202   1          tx_assci_frame();
+ 203   1      }
+ 204          
+ 205          void ForceSingleCoil_05(uint8_t dir, uint16_t coilID, uint8_t value) // 0x05, OK!!
+ 206          {
+ 207   1          int i = 0;
+ 208   1      
+ 209   1          gen_start();
+ 210   1          gen_dir(dir);
+ 211   1          gen_function(5);    // 0x05    
+ 212   1          data_count = 5;
+ 213   1          
+ 214   1          TwoByteToAscii(coilID - 1);
+ 215   1          for ( i = 3; i >= 0; i-- )
+ 216   1          {       
+ 217   2              ascii_frame[data_count++] = ascii[i];     
+ 218   2          }     
+ 219   1          
+ 220   1          if ( value > 0 )
+ 221   1          {
+ 222   2              TwoByteToAscii(65280);  // value FF00
+ 223   2          }
+ 224   1          else
+ 225   1          {
+ 226   2              TwoByteToAscii(0);      // value 0000
+ 227   2          }
+ 228   1      
+ 229   1          for ( i = 3; i >= 0; i-- )
+ 230   1          {       
+ 231   2              ascii_frame[data_count++] = ascii[i];     
+ 232   2          }     
+ 233   1      
+ 234   1          gen_lrc();
+ 235   1      
+ 236   1          tx_assci_frame();
+ 237   1      }
+ 238          
+ 239          void PresetSingleRegister_06(uint8_t dir, uint16_t registerID, uint16_t value) // 0x06, OK!!!
+C51 COMPILER V9.60.0.0   MASTER                                                            10/13/2022 12:12:43 PAGE 5   
+
+ 240          {
+ 241   1          int i = 0;
+ 242   1          
+ 243   1          gen_start();
+ 244   1          gen_dir(dir);
+ 245   1          gen_function(6);    // 0x06    
+ 246   1          data_count = 5;
+ 247   1          
+ 248   1          TwoByteToAscii(registerID - 1);
+ 249   1          for ( i = 3; i >= 0; i-- )
+ 250   1          {       
+ 251   2              ascii_frame[data_count++] = ascii[i];     
+ 252   2          }     
+ 253   1          
+ 254   1          TwoByteToAscii(value); 
+ 255   1          for ( i = 3; i >= 0; i-- )
+ 256   1          {       
+ 257   2              ascii_frame[data_count++] = ascii[i];     
+ 258   2          }     
+ 259   1      
+ 260   1          gen_lrc();
+ 261   1      
+ 262   1          tx_assci_frame();
+ 263   1      }
+ 264          
+ 265          void ForceMultipleCoils_15(uint8_t dir, uint16_t start, uint16_t cant)    //15  OKKK!!!
+ 266          {
+ 267   1          int i = 0;
+ 268   1          
+ 269   1          gen_start();
+ 270   1          gen_dir(dir);
+ 271   1          gen_function(15);    // 0x0F  
+ 272   1          data_count = 5;
+ 273   1          
+ 274   1          TwoByteToAscii(start - 1);
+ 275   1          for ( i = 3; i >= 0; i-- )
+ 276   1          {       
+ 277   2              ascii_frame[data_count++] = ascii[i];     
+ 278   2          } 
+ 279   1          
+ 280   1          TwoByteToAscii(cant);
+ 281   1          for ( i = 3; i >= 0; i-- )
+ 282   1          {       
+ 283   2              ascii_frame[data_count++] = ascii[i];     
+ 284   2          } 
+ 285   1          
+ 286   1          ByteToAscii(byte_count);
+ 287   1          ascii_frame[data_count++] = ascii[0];
+ 288   1          ascii_frame[data_count++] = ascii[1];
+ 289   1      
+ 290   1          for ( i = 0; i < byte_count; i++ )
+ 291   1          {
+ 292   2              ByteToAscii((uint8_t)parameters[i]);
+ 293   2              ascii_frame[data_count++] = ascii[0];
+ 294   2              ascii_frame[data_count++] = ascii[1];             
+ 295   2          }
+ 296   1      
+ 297   1          gen_lrc();
+ 298   1      
+ 299   1          tx_assci_frame();
+ 300   1      }
+ 301          
+C51 COMPILER V9.60.0.0   MASTER                                                            10/13/2022 12:12:43 PAGE 6   
+
+ 302          void PresetMultipleRegisters_16(uint8_t dir, uint16_t start, uint16_t cant)    //16, OK!!! 
+ 303          {
+ 304   1          int i = 0;
+ 305   1          
+ 306   1          gen_start();
+ 307   1          gen_dir(dir);
+ 308   1          gen_function(16);    // 0x10h
+ 309   1          data_count = 5;
+ 310   1          
+ 311   1          TwoByteToAscii(start - 1);
+ 312   1          for ( i = 3; i >= 0; i-- )
+ 313   1          {       
+ 314   2              ascii_frame[data_count++] = ascii[i];     
+ 315   2          } 
+ 316   1          
+ 317   1          TwoByteToAscii(cant);
+ 318   1          for ( i = 3; i >= 0; i-- )
+ 319   1          {       
+ 320   2              ascii_frame[data_count++] = ascii[i];     
+ 321   2          } 
+ 322   1          
+ 323   1          ByteToAscii(byte_count * 2);
+ 324   1          ascii_frame[data_count++] = ascii[0];
+ 325   1          ascii_frame[data_count++] = ascii[1];
+ 326   1      
+ 327   1          for ( i = 0; i < byte_count; i++ )
+ 328   1          {
+ 329   2              TwoByteToAscii(parameters[i]);
+ 330   2              
+ 331   2              ascii_frame[data_count++] = ascii[3];
+ 332   2              ascii_frame[data_count++] = ascii[2];
+ 333   2              ascii_frame[data_count++] = ascii[1];
+ 334   2              ascii_frame[data_count++] = ascii[0];
+ 335   2          }
+ 336   1      
+ 337   1          gen_lrc();
+ 338   1      
+ 339   1          tx_assci_frame();
+ 340   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1318    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1      39
+   IDATA SIZE       =     82    ----
+   BIT SIZE         =      1    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,8 @@
+".\Objects\Delay_1T.obj",
+".\Objects\STARTUP.obj",
+".\Objects\ascii.obj",
+".\Objects\main.obj",
+".\Objects\master.obj" 
+TO ".\Objects\master" 
+
+PRINT(".\Listings\master.map")

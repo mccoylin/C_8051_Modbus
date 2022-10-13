@@ -1,7 +1,13 @@
 #include <stdio.h>
-#include <main.h>
-#include <modbus.h>
-#include <reg52.h>
+#include "..\stdint.h"
+
+#include "REG_MPC82G516.h"
+
+#include "main.h"
+#include "modbus.h"
+#include "slave.h"
+#include "..\Delay.H"
+
 
 #define MMOD 1009
 
@@ -13,14 +19,14 @@ int sec_count = 0;
 int last_data_count = 0;
 int last_hash       = 0;
 
-uint8 idata _7seg[10] = {0x7E,0x42,0xEC,0xE6,0xD2,0xB6,0x9E,0x62,0xFE,0xF2};
+uint8_t idata _7seg[10] = {0x7E,0x42,0xEC,0xE6,0xD2,0xB6,0x9E,0x62,0xFE,0xF2};
 
 sbit LED1 = P1^3;
 sbit EN_D = P3^7;
 sbit ONE  = P2^0;
-uint8 BUSY = 0;
+uint8_t BUSY = 0;
 
-void Serial_PWM_Init()
+void Serial_PWM_Init(void)
 { 
     RS485En = 0;
 
@@ -47,26 +53,29 @@ void Serial_PWM_Init()
     TR1 = 1; 
 }
 
-int make_hash() 
+int make_hash(void) 
 {
     int i, h = 0;
-    for ( i = 0; i < data_count; i++ ) {
+
+    for ( i = 0; i < data_count; i++ ) 
+    {
         h += (char)ascii_frame[i] * ( i + 1 );
     }
     return ( 19 * h ) % MMOD;
 }
 
-void delay_ms(unsigned int d)
-{
-    int k = 0;
-    int s = 0;
-    for ( k = 0; k < d; k++ )
-    {     
-        s++;
-    }
-}
+//void delay_ms(unsigned int d)
+//{
+//    int k = 0;
+//    int s = 0;
+//
+//    for ( k = 0; k < d; k++ )
+//    {     
+//        s++;
+//    }
+//}
 
-void PWM() interrupt 1
+void PWM(void) interrupt 1
 {
     int curr = 0;
     int off = GetCoilValue(0);
@@ -110,9 +119,9 @@ void PWM() interrupt 1
     TR0 = 1;
 }
 
-void SerialPortInt() interrupt 4
+void SerialPortInt(void) interrupt 4
 {
-    uint8 rx = 0;
+    uint8_t rx = 0;
 
     if( TI == 1 )
     {       
@@ -135,16 +144,17 @@ void SerialPortInt() interrupt 4
         }
 
     }
-    else                 
-    if( RI == 1 )
+    else if( RI == 1 )
     {
-	
         if ( RS485En == 0 && BUSY == 1 )	// rx and not busy
         {           
             rx = SBUF;             
             RI = 0;
-            if ( rx == 0 ) return;  //discard bad characters
-                
+            if (rx == 0)
+            {
+                return; // discard bad characters
+            }
+
             if ( data_count == 0 )
             {             
                 if ( rx == ':' )    // new frame
@@ -167,6 +177,7 @@ void SerialPortInt() interrupt 4
                         BUSY = 1;   // device busy = false
                     }
                 }                      
+
                 if ( data_count == ASCII_FRAME_SIZE )   // bad frame size
                 {                
                     clear_frame();             
@@ -174,11 +185,13 @@ void SerialPortInt() interrupt 4
             }
         }
         else
+        {
             RI = 0;
+        }
     }
 }
 
-void update_display()
+void update_display(void)
 {    
     int x = (int)GetHoldingRegisterValue(0); // number             
     int L = (int)GetHoldingRegisterValue(1); // bright
@@ -199,7 +212,9 @@ void update_display()
     }
   
     if ( L >= 0 && L <= 5 )
+    {
         level = L;
+    }
 }
 
 void main(void)

@@ -1,9 +1,13 @@
-#include "reg52.h"
+
+#ifndef __MAIN_H__
+#define __MAIN_H__
+
+#include "REG_MPC82G516.h"
  
-/* data types */
-typedef unsigned char   uint8;
-typedef unsigned int    uint16;
-typedef unsigned long   uint32;
+///* data types */
+//typedef unsigned char   uint8;
+//typedef unsigned int    uint16;
+//typedef unsigned long   uint32;
 
 /* RS485 enable/disable terminal */
 sbit RS485En  =  P2^7;
@@ -13,4 +17,6 @@ sbit RS485En  =  P2^7;
 #define TIMER_LOW   0xF4    //2400
 
 
-void delay_ms(unsigned int d);
+//void delay_ms(unsigned int d);
+
+#endif  //__MAIN_H__

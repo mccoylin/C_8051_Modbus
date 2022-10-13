@@ -1,0 +1,375 @@
+A51 MACRO ASSEMBLER  DELAY_1T                                                             10/13/2022 12:12:50 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.7.0
+OBJECT MODULE PLACED IN .\Objects\Delay_1T.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE ..\Delay_1T.A51 NOMOD51 SET(SMALL) DEBUG PRINT(.\Listings\Delay_1T.lst)
+                       XREF OBJECT(.\Objects\Delay_1T.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;******************************************************************************
+                       2     ; Delay_1T.A51
+                       3     ; (delay time based on Fosc=12MHz/1T, 1/12us per clock, or
+                       4     ;  delay time based on Fosc=24MHz/1T, 1/24us per clock)
+                       5     ;******************************************************************************
+                       6     
+  0001                 7     Fosc_11M0592Hz       EQU  1 
+  0000                 8     Fosc_12MHz           EQU  0 ;! use this option for Bench Module test
+  0000                 9     Fosc_24MHz           EQU  0
+                      10     
+                      11     PUBLIC   _delay_ms
+                      12     
+                      13     PUBLIC   delay_1us,delay_2us,delay_5us
+                      14     PUBLIC   delay_10us,delay_20us,delay_50us
+                      15     PUBLIC   delay_100us,delay_200us,delay_500us
+                      16     
+                      17     ;;ACC      DATA   0E0h
+                      18     
+                      19     ;==============================================================================
+                      20     code_delay SEGMENT CODE
+----                  21              RSEG   code_delay
+                      22              USING  0
+                      23     
+                      24     ;------------------------------------------------------------------------------
+                      25     ; Miscellaneous delay time at Fosc=24MHz/12T, 0.5us/mc
+                      26     ;------------------------------------------------------------------------------
+                      27     ;
+                      28     ;!!! Note: With formal parameter, need to be '_'prefixed
+0000                  29     _delay_ms:
+0000 C0E0             30              PUSH   ACC
+0002 C001             31              PUSH   AR1
+0004 C000             32              PUSH   AR0
+                      33     
+0006 8E01             34              MOV    AR1,R6     ;int's MSB from C51
+0008 8F00             35              MOV    AR0,R7     ;int's LSB from C51
+                      36     
+000A E500             37              MOV    A,AR0
+000C 6006             38              JZ     ndLSB
+000E                  39       LSB_loop:
+000E 120000   F       40              CALL   delay_unit_1ms
+0011 D500FA           41              DJNZ   AR0,LSB_loop
+0014                  42       ndLSB:
+0014 E501             43              MOV    A,AR1
+0016 600C             44              JZ     ndMSB
+0018                  45       MSB_loop1:
+0018 750000           46              MOV    AR0,#00h
+001B                  47       MSB_loop0:
+001B 120000   F       48              CALL   delay_unit_1ms
+001E D500FA           49              DJNZ   AR0,MSB_loop0
+0021 D501F4           50              DJNZ   AR1,MSB_loop1
+0024                  51       ndMSB:
+0024 D000             52              POP    AR0
+0026 D001             53              POP    AR1
+0028 D0E0             54              POP    ACC
+002A 22               55              RET
+                      56     ;
+002B                  57     delay_unit_1ms:
+A51 MACRO ASSEMBLER  DELAY_1T                                                             10/13/2022 12:12:50 PAGE     2
+
+002B 120000   F       58              CALL   delay_500us
+002E 120000   F       59              CALL   delay_200us
+0031 120000   F       60              CALL   delay_200us
+0034 120000   F       61              CALL   delay_50us
+0037 120000   F       62              CALL   delay_20us
+003A 120000   F       63              CALL   delay_20us
+003D 120000   F       64              CALL   delay_5us
+0040 00               65              NOP
+0041 00               66              NOP
+0042 22               67              RET
+                      68     
+                      69     ;------------------------------
+                      70     NOPs     MACRO  n
+                      71                REPT n
+                      72                NOP
+                      73                ENDM
+                      74              ENDM
+                      75     
+                      76     ;------------------------------
+                      77     IF Fosc_11M0592Hz
+0043                  78     delay_1us: ;12 clocks, 11.0592MHz 1/11.0592x 12 = 1.085
+                      79              NOPs   4
+0047 22               87              RET
+                      88     ENDIF
+                      89     
+                      90     IF Fosc_12MHz
+                             delay_1us: ;12 clocks, CALL+RET=10 clocks
+                                      NOPs   2
+                                      RET
+                             ENDIF
+                      95     
+                      96     IF Fosc_24MHz
+                             delay_1us: ;24 clocks, CALL+RET=10 clocks
+                                      NOPs   14
+                                      RET
+                             ENDIF
+                     101     
+                     102     ;------------------------------
+                     103     IF Fosc_11M0592Hz
+0048                 104     delay_2us: ;23 clocks  11.0592MHz 1/11.0592x 23 = 2.07
+                     105              NOPs   23
+005F 22              132              RET
+                     133     ENDIF
+                     134     
+                     135     IF Fosc_12MHz
+                             delay_2us: ;24 clocks, CALL+RET=10 clocks
+                                      NOPs   14
+                                      RET
+                             ENDIF
+                     140     
+                     141     IF Fosc_24MHz
+                             delay_2us: ;48 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7     ;4
+                                      MOV    AR7,#5  ;3
+                                      DJNZ   AR7,$   ;5x5
+                                      POP    AR7     ;3
+                                      NOPs   3
+                                      RET
+                             ENDIF
+                     150     
+                     151     ;------------------------------
+                     152     IF Fosc_11M0592Hz
+0060                 153     delay_5us: ;55 clocks , 11.0592MHz 1/11.0592x 56 = 5.08
+0060 C007            154              PUSH   AR7     ;4
+0062 750707          155              MOV    AR7,#7  ;3
+0065 D507FD          156              DJNZ   AR7,$   ;5x7
+A51 MACRO ASSEMBLER  DELAY_1T                                                             10/13/2022 12:12:50 PAGE     3
+
+0068 D007            157              POP    AR7     ;3
+                     158              NOPs   1
+006B 22              163              RET
+                     164     ENDIF
+                     165     
+                     166     IF Fosc_12MHz
+                             delay_5us: ;60 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7     ;4
+                                      MOV    AR7,#8  ;3
+                                      DJNZ   AR7,$   ;5x8
+                                      POP    AR7     ;3
+                                      RET
+                             ENDIF
+                     174     
+                     175     IF Fosc_24MHz
+                             delay_5us: ;120 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7     ;4
+                                      MOV    AR7,#20 ;3
+                                      DJNZ   AR7,$   ;5x20
+                                      POP    AR7     ;3
+                                      RET
+                             ENDIF
+                     183     
+                     184     ;------------------------------
+                     185     IF Fosc_11M0592Hz
+006C                 186     delay_10us: ;112 clocks , 11.0592MHz 1/11.0592x 112 = 10.08
+006C C007            187              PUSH   AR7     ;4
+006E 750712          188              MOV    AR7,#18 ;3
+0071 D507FD          189              DJNZ   AR7,$   ;5x18
+0074 D007            190              POP    AR7     ;3
+                     191              NOPs   2
+0078 22              197              RET
+                     198     ENDIF
+                     199     
+                     200     IF Fosc_12MHz
+                             delay_10us: ;120 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7     ;4
+                                      MOV    AR7,#20 ;3
+                                      DJNZ   AR7,$   ;5x20
+                                      POP    AR7     ;3
+                                      RET
+                             ENDIF
+                     208     
+                     209     IF Fosc_24MHz
+                             delay_10us: ;240 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7     ;4
+                                      MOV    AR7,#44 ;3
+                                      DJNZ   AR7,$   ;5x44
+                                      POP    AR7     ;3
+                                      RET
+                             ENDIF
+                     217     
+                     218     ;------------------------------
+                     219     IF Fosc_11M0592Hz
+0079                 220     delay_20us: ;223 clocks , 11.0592MHz 1/11.0592x 223 = 20.07
+0079 C007            221              PUSH   AR7     ;4
+007B 750728          222              MOV    AR7,#40 ;3
+007E D507FD          223              DJNZ   AR7,$   ;5x40
+0081 D007            224              POP    AR7     ;3
+                     225              NOPs   3
+0086 22              232              RET
+                     233     ENDIF
+                     234     
+                     235     IF Fosc_12MHz
+                             delay_20us: ;240 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7     ;4
+A51 MACRO ASSEMBLER  DELAY_1T                                                             10/13/2022 12:12:50 PAGE     4
+
+                                      MOV    AR7,#44 ;3
+                                      DJNZ   AR7,$   ;5x44
+                                      POP    AR7     ;3
+                                      RET
+                             ENDIF
+                     243     
+                     244     IF Fosc_24MHz
+                             delay_20us: ;480 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7     ;4
+                                      MOV    AR7,#92 ;3
+                                      DJNZ   AR7,$   ;5x92
+                                      POP    AR7     ;3
+                                      RET
+                             ENDIF
+                     252     
+                     253     ;------------------------------
+                     254     IF Fosc_11M0592Hz
+0087                 255     delay_50us: ;556 clocks , 11.0592MHz 1/11.0592x 556 = 50.04
+0087 C007            256              PUSH   AR7      ;4
+0089 75076B          257              MOV    AR7,#107 ;3
+008C D507FD          258              DJNZ   AR7,$    ;5x107
+008F D007            259              POP    AR7      ;3
+                     260              NOPs   1
+0092 22              265              RET
+                     266     ENDIF
+                     267     
+                     268     IF Fosc_12MHz
+                             delay_50us: ;600 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7      ;4
+                                      MOV    AR7,#116 ;3
+                                      DJNZ   AR7,$    ;5x116
+                                      POP    AR7      ;3
+                                      RET
+                             ENDIF
+                     276     
+                     277     IF Fosc_24MHz
+                             delay_50us: ;1200 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7      ;4
+                                      MOV    AR7,#236 ;3
+                                      DJNZ   AR7,$    ;5x236
+                                      POP    AR7      ;3
+                                      RET
+                             ENDIF
+                     285     
+                     286     ;------------------------------
+                     287     IF Fosc_11M0592Hz
+0093                 288     delay_100us: ;1112 clocks , 11.0592MHz 1/11.0592x 1112 = 100.08
+0093 C007            289              PUSH   AR7      ;4
+0095 7507DA          290              MOV    AR7,#218 ;3
+0098 D507FD          291              DJNZ   AR7,$    ;5x218
+009B D007            292              POP    AR7      ;3
+                     293              NOPs   2
+009F 22              299              RET
+                     300     ENDIF
+                     301     
+                     302     IF Fosc_12MHz
+                             delay_100us: ;1200 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7      ;4
+                                      MOV    AR7,#236 ;3
+                                      DJNZ   AR7,$    ;5x236
+                                      POP    AR7      ;3
+                                      RET
+                             ENDIF
+                     310     
+                     311     IF Fosc_24MHz
+                             delay_100us: ;2400 clocks, CALL+RET=10 clocks
+A51 MACRO ASSEMBLER  DELAY_1T                                                             10/13/2022 12:12:50 PAGE     5
+
+                                      PUSH   AR7      ;4
+                                      MOV    AR7,#255 ;3
+                                      DJNZ   AR7,$    ;5x255
+                                      MOV    AR7,#220 ;3
+                                      DJNZ   AR7,$    ;5x220
+                                      POP    AR7      ;3
+                                      NOPs   2
+                                      RET
+                             ENDIF
+                     322     
+                     323     ;------------------------------
+                     324     IF Fosc_11M0592Hz
+00A0                 325     delay_200us: ;2223 clocks , 11.0592MHz 1/11.0592x 2223 = 200.07
+00A0 C007            326              PUSH   AR7      ;4
+00A2 7507FF          327              MOV    AR7,#255 ;3
+00A5 D507FD          328              DJNZ   AR7,$    ;5x255
+00A8 7507B9          329              MOV    AR7,#185 ;3
+00AB D507FD          330              DJNZ   AR7,$    ;5x185
+00AE D007            331              POP    AR7      ;3
+                     332              NOPs   2
+00B2 22              338              RET
+                     339     ENDIF
+                     340     
+                     341     IF Fosc_12MHz
+                             delay_200us: ;2400 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7      ;4
+                                      MOV    AR7,#255 ;3
+                                      DJNZ   AR7,$    ;5x255
+                                      MOV    AR7,#220 ;3
+                                      DJNZ   AR7,$    ;5x220
+                                      POP    AR7      ;3
+                                      NOPs   2
+                                      RET
+                             ENDIF
+                     352     
+                     353     IF Fosc_24MHz
+                             delay_200us: ;4800 clocks, CALL+RET=10 clocks
+                                      PUSH   AR7      ;4
+                                      MOV    AR7,#255 ;3
+                                      DJNZ   AR7,$    ;5x255
+                                      MOV    AR7,#255 ;3
+                                      DJNZ   AR7,$    ;5x255
+                                      MOV    AR7,#255 ;3
+                                      DJNZ   AR7,$    ;5x255
+                                      MOV    AR7,#189 ;3
+                                      DJNZ   AR7,$    ;5x189
+                                      POP    AR7      ;3
+                                      NOP
+                                      RET
+                             ENDIF
+                     368     
+                     369     ;------------------------------
+00B3                 370     delay_500us:
+00B3 120000   F      371              CALL   delay_200us
+00B6 120000   F      372              CALL   delay_200us
+00B9 120000   F      373              CALL   delay_100us
+00BC 22              374              RET
+                     375     ;
+                     376     ;------------------------------
+                     377     ;==============================================================================
+                     378     
+                     379              END
+                             
+A51 MACRO ASSEMBLER  DELAY_1T                                                             10/13/2022 12:12:50 PAGE     6
+
+XREF SYMBOL TABLE LISTING
+---- ------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES / REFERENCES
+
+ACC. . . . . . . .  D ADDR   00E0H   A      30 54
+AR0. . . . . . . .  D ADDR   0000H   A      32 35 37 41 46 49 52
+AR1. . . . . . . .  D ADDR   0001H   A      31 34 43 50 53
+AR7. . . . . . . .  D ADDR   0007H   A      154 155 156 157 187 188 189 190 221 222 223 224 256 257 258 259 289 290
+                                           291 292 326 327 328 329 330 331
+CODE_DELAY . . . .  C SEG    00BDH       REL=UNIT   20# 21
+DELAY_100US. . . .  C ADDR   0093H   R   SEG=CODE_DELAY   15 288# 373
+DELAY_10US . . . .  C ADDR   006CH   R   SEG=CODE_DELAY   14 186#
+DELAY_1US. . . . .  C ADDR   0043H   R   SEG=CODE_DELAY   13 78#
+DELAY_200US. . . .  C ADDR   00A0H   R   SEG=CODE_DELAY   15 59 60 325# 371 372
+DELAY_20US . . . .  C ADDR   0079H   R   SEG=CODE_DELAY   14 62 63 220#
+DELAY_2US. . . . .  C ADDR   0048H   R   SEG=CODE_DELAY   13 104#
+DELAY_500US. . . .  C ADDR   00B3H   R   SEG=CODE_DELAY   15 58 370#
+DELAY_50US . . . .  C ADDR   0087H   R   SEG=CODE_DELAY   14 61 255#
+DELAY_5US. . . . .  C ADDR   0060H   R   SEG=CODE_DELAY   13 64 153#
+DELAY_UNIT_1MS . .  C ADDR   002BH   R   SEG=CODE_DELAY   40 48 57#
+FOSC_11M0592HZ . .  N NUMB   0001H   A      7# 77 103 152 185 219 254 287 324
+FOSC_12MHZ . . . .  N NUMB   0000H   A      8# 90 135 166 200 235 268 302 341
+FOSC_24MHZ . . . .  N NUMB   0000H   A      9# 96 141 175 209 244 277 311 353
+LSB_LOOP . . . . .  C ADDR   000EH   R   SEG=CODE_DELAY   39# 41
+MSB_LOOP0. . . . .  C ADDR   001BH   R   SEG=CODE_DELAY   47# 49
+MSB_LOOP1. . . . .  C ADDR   0018H   R   SEG=CODE_DELAY   45# 50
+NDLSB. . . . . . .  C ADDR   0014H   R   SEG=CODE_DELAY   38 42#
+NDMSB. . . . . . .  C ADDR   0024H   R   SEG=CODE_DELAY   44 51#
+_DELAY_MS. . . . .  C ADDR   0000H   R   SEG=CODE_DELAY   11 29#
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
