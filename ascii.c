@@ -9,6 +9,11 @@ uint8_t hexa[4];
 
 
 /* functions code */
+
+/// @brief ByteToAscii 函數的功能是將一個 byte 值轉換為兩個 ASCII 字元。
+///        這通常是通過將 byte 值分成兩個 nibbles（每個 nibble 是 4 位），然後將每個 nibble 轉換為其對應的 ASCII 字元。
+/// @param val 需要轉換的 byte 值
+///        ascii[] 放進轉換後的 ASCII 字元
 void ByteToAscii(uint8_t val)
 {
     uint8_t a = val / 16;
@@ -34,6 +39,11 @@ void ByteToAscii(uint8_t val)
     return ;
 }
 
+
+/// @brief NibbleToAscii 函數的功能是將一個 nibble（4位二進制數）轉換為一個 ASCII 字元。
+///        這通常是通過檢查 nibble 的值，並將其轉換為對應的 ASCII 字元。
+/// @param val 需要轉換的 nibble 值
+/// @return 轉換後的 ASCII 字元
 uint8_t NibbleToAscii(uint8_t val)
 {     
     if ( val <= 9 )        
@@ -46,6 +56,11 @@ uint8_t NibbleToAscii(uint8_t val)
     }        
 }
 
+
+/// @brief AsciiToByte 函數的功能是將兩個 ASCII 字元（由參數 a 和 b 表示）轉換為一個 byte 值。 
+/// @param a 第一個 ASCII 字元
+/// @param b 第二個 ASCII 字元
+/// @return 計算得到的 byte 值。 
 uint8_t AsciiToByte(uint8_t a, uint8_t b)
 {
     if ( a >= 65 )        
@@ -69,6 +84,10 @@ uint8_t AsciiToByte(uint8_t a, uint8_t b)
     return (16 * a) + b;
 }
 
+
+/// @brief TwoByteToAscii 函數的功能是將一個 16 位的數（由參數 val 表示）轉換為四個 ASCII 字元。
+/// @param val 傳入的 16 位數
+///        hexa[] 傳入的 16 位數轉換為 4 個 4 位數
 void TwoByteToAscii(uint16_t val)
 {
     int i = 0;
@@ -94,6 +113,10 @@ void TwoByteToAscii(uint16_t val)
     return ;
 }
 
+
+/// @brief AsciiToTwoByte 函數的功能是將四個 ASCII 字元（存儲在全局變量 ascii 的前四個元素中）轉換為一個 16 位的數。
+/// @param  
+/// @return 計算得到的 16 位的數。 
 uint16_t AsciiToTwoByte(void)
 {
     uint16_t a = AsciiToByte(ascii[0], ascii[1]);
