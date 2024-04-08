@@ -11,7 +11,7 @@
 //typedef unsigned long   uint32;
 
 /* RS485 enable/disable terminal */
-sbit RS485En  =  P3^2;
+sbit RS485En  =  P3^2;          // 使用硬體接腳 P3.2 來控制 RS485 通信的啟用和禁用
      
 /* timer conf for uart baudrate */
 #define TIMER_HIGHT_1 0xF4
